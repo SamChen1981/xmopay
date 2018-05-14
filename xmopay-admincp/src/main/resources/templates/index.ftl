@@ -39,7 +39,9 @@
 <body>
 <div id="header" class="header">
 
-    <div class="header-logo"></div>
+    <div class="header-logo">
+        <div class="header-logo-text">XmoPay</div>
+    </div>
     <div class="header-nav">
         <div class="header-navmenu">
             <ul id="navlist">

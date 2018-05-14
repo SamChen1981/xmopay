@@ -414,7 +414,7 @@ public class PartnerController {
             Matcher isNum = pattern.matcher(rate);
             if (!isNum.matches()) {
                 log.error(logmsg, "结算费率错误");
-                result.setResultMsg("结算费率必须大于0的数字");
+                result.setResultMsg("结算费率必须大于0的保留2位小数的数字");
                 return result;
             }
 

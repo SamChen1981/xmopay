@@ -46,4 +46,53 @@ public class BillingsServiceImpl implements BillingsService {
         }
         return singleResult;
     }
+
+    @Override
+    public SingleResult<PageInfo> getBillingStatics(Map paramMap) {
+        SingleResult<PageInfo> result = new SingleResult<>(false, null);
+        try{
+            PageHelper.startPage((int)paramMap.get("pageIndex"),(int)paramMap.get("pageSize"));
+            List<Map> billingStaticsList = billingsDao.getBillingStaticsList(paramMap);
+            PageInfo<Map> pageInfo = new PageInfo<>(billingStaticsList);
+            if(billingStaticsList!=null){
+                result.setResult(pageInfo);
+                result.setSuccess(true);
+                return result;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public SingleResult<Map> getBillingStaticsTotal(Map paramMap) {
+        SingleResult<Map> singleResult = new SingleResult<>(false,null);
+        try{
+            Map totalMap = billingsDao.getBillingStaticsTotal(paramMap);
+            if(totalMap != null ){
+                singleResult.setSuccess(true);
+                singleResult.setResult(totalMap);
+                return singleResult;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return singleResult;
+    }
+
+    @Override
+    public SingleResult<List<Map>> exportBillingStatics(Map<String, Object> paramMap) {
+        SingleResult<List<Map>> result = new SingleResult<>(false, null);
+        try {
+            List<Map> typeStatisList = billingsDao.getBillingStaticsList(paramMap);
+            if (typeStatisList != null && typeStatisList.size() > 0) {
+                result.setSuccess(true);
+                result.setResult(typeStatisList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

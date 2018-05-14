@@ -217,7 +217,7 @@
                         </td>
                         <td>
                             <#if list.tranType == 1000>
-                                <#if list.orderStatus==1 && list.refundStatus==0>
+                                <#if list.orderStatus==1>
                                     <a href="javascript:void(0);" onclick="supply('${list.orderSn}', this)">补</a> |
                                 </#if>
                             </#if>
@@ -232,7 +232,7 @@
                                 </#if>
                             </#if>
                             <#--<#if list.channelCode?? && list.channelCode?index_of('JYT') gt -1>-->
-                            <#if list.orderStatus==1 && list.refundStatus==0 && list.billingSn??><#--交易成功，退款状态为默认状态，有流水号-->
+                            <#if list.orderStatus==1 && list.billingSn??><#--交易成功，退款状态为默认状态，有流水号-->
                                 | <a href="javascript:void(0);" onclick="orderRefund('${list.orderSn}', '${list.partnerId}')">退</a>
                             </#if>
                             <#--</#if>-->

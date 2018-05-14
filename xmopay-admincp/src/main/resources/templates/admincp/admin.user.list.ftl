@@ -70,7 +70,7 @@
             <tbody>
 				<#if lists?? && lists?size&gt;0>
 					<#list lists as list>
-						<#if list.userName != 'paycloud'>
+						<#if list.roleId != 1>
                         <tr id="userid-${list.muId}" overstyle="on">
                             <td>${list.muId}</td>
                             <td title="角色ID:${list.roleId}">${list.adminRoleDto.roleName}</td>

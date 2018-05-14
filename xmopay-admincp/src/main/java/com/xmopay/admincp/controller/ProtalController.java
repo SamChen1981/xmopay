@@ -87,7 +87,7 @@ public class ProtalController {
     /**
      * @param
      * @return
-     * @Description: 初始化 paycloud 菜单栏
+     * @Description: 初始化 admin 菜单栏
      */
     @ResponseBody
     @RequestMapping(value = "/initMenus")
@@ -121,7 +121,7 @@ public class ProtalController {
                     adminAuth.setMenuId(adminMenuDto.getMenuId());
                     adminAuthService.addAuth(adminAuth);
                 }
-                log.info(logmsg, "paycloud 菜单栏初始化成功！");
+                log.info(logmsg, "admin 菜单栏初始化成功！");
                 result.setResultMsg("初始化成功!");
                 result.setResultCode(XmopayResponse.SUCCESS);
                 return result;
@@ -131,8 +131,8 @@ public class ProtalController {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(logmsg, "paycloud 菜单栏初始化异常！");
-            result.setResultMsg("paycloud 菜单栏初始化异常");
+            log.error(logmsg, "admin 菜单栏初始化异常！");
+            result.setResultMsg("admin 菜单栏初始化异常");
             result.setResultCode(XmopayResponse.EXCEPTION);
             return result;
         }

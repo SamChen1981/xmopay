@@ -8,9 +8,10 @@ html,body {padding: 0;margin: 0; overflow-x:hidden; overflow-y:auto;}
 a {text-decoration: none;}
 
 /* Header */
-.header{height:45px; background: #1f1f1f}
+.header{height:45px; background: #253144}
 .header-panel{height:55px; /*background:url(../images/top_bg.jpg) repeat-x 100% 0;*/}
-.header-logo{width:180px; height:45px; background:url(../images/logo.png) no-repeat; margin-left:10px; float:left;}
+.header-logo{width:145px; height:45px; margin-left:10px; float:left;}
+.header-logo-text{color:#FFF; padding-top:5px; text-align:center; vertical-align:middle; font-size: 30px;}
 .header-title{color:#FFF; text-align:right; padding:10px 12px 0px 0px; font-family: Arial, "宋体", Verdana, sans-serif;}
 .header-title span{float:inherit}
 .header-title a{color:#FFF;}
@@ -22,18 +23,18 @@ a {text-decoration: none;}
 #navlist li {display: inline; height:45px; float:left}
 #navlist li a {color:#d9d9d9; padding: 13px 13px; height:45px; float:left; margin-left: 1px; border-bottom: none;  text-decoration: none;}
 #navlist li a:hover {background:#474747; padding: 13px 13px;height:45px; float:left; margin-left: 1px; border-bottom: none;  text-decoration: none;}
-#navlist li.active > a {height:45px; background: #d64635; color: #FFF; text-decoration: none;}
+#navlist li.active > a {height:45px; background: #18222E; color: #3383F3; text-decoration: none;}
 
 /* content */
-#content{float:left; width:100%; background:#303030}
+#content{float:left; width:100%; background:#253144}
 #left{width: 170px; float: left;}
 #leftMenus {font-size:14px;}
 #leftMenus dt {border-bottom:1px solid #484848; color:#d9d9d9; font-weight: bold; line-height:45px; height:40px; padding-left: 25px; margin-bottom:8px;}
 
 #leftMenus dd {position: relative; height: 35px; padding-left: 25px; }
 #leftMenus dd a {color: #d9d9d9; line-height: 35px; height: 35px; }
-#leftMenus dd.actived {line-height: 35px; height: 35px; color:#ffffff; background:#d64635;  background-image: url(../images/left_arrow.png); background-position: 163px 10px; background-repeat: no-repeat;}
-#leftMenus dd.actived > a {line-height: 35px; height: 35px; color:#ffffff; }
+#leftMenus dd.actived {line-height: 35px; height: 35px; color:#ffffff; background:#18222E;  background-image: url(../images/left_arrow.png); background-position: 163px 10px; background-repeat: no-repeat;}
+#leftMenus dd.actived > a {line-height: 35px; height: 35px; color:#3383F3; }
 #leftMenus dd .close {position: absolute; top: 15px; right: 20px;}
 
 /* right 容器 */

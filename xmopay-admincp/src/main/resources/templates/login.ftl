@@ -8,7 +8,7 @@
 <script type="text/javascript" src="static/js/jquery.min.js" charset="utf-8"></script>
 <link type="text/css" rel="stylesheet" href="static/css/login.css" charset="utf-8" />
 <style>
-body{background-color:#fff}
+body{background-color:#223035}
 </style>
 </head>
 
@@ -16,8 +16,8 @@ body{background-color:#fff}
 	<div class="modal in" id="login-modal" >
 		<p>登录：<span id="msgTips"></span></p>
 		<div class="login-form clearfix">
-			<input id="username" name="username" type="text" placeholder="帐号：" value="paycloud" onblur="googlecheck(this.value);" />
-			<input id="password" name="password" type="password" placeholder="密码：" value="Pay2017" />
+			<input id="username" name="username" type="text" placeholder="帐号：" value="" onblur="googlecheck(this.value);" />
+			<input id="password" name="password" type="password" placeholder="密码：" value="" />
 			<input id="googlecode" name="googlecode" type="text" placeholder="Google安全码：" style="display: none">
 			<input type="button" name="type" class="button-blue login" value="登录" onclick="checkLogin()">
 		</div>

@@ -17,4 +17,8 @@ public interface BillingsDao {
     List<BillingsDto> getBillingsList(BillingsDto billingsDto);
 
     Map getBillingsTotal(BillingsDto billingsDto);
+
+    List<Map> getBillingStaticsList(Map paramMap);
+
+    Map getBillingStaticsTotal(Map paramMap);
 }

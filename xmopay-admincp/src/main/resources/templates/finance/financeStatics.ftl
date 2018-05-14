@@ -3,8 +3,8 @@
     <#include "../header.ftl">
     <#--laydate 时间控件-->
     <#--配置文件 -->
-    <link rel="stylesheet"  href="static/public/plugins/layui/css/layui.css"/>
-    <script type="text/javascript"  src="static/public/plugins/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet"  href="static/plugins/layui/css/layui.css"/>
+    <script type="text/javascript"  src="static/plugins/layui/layui.js" charset="utf-8"></script>
 
 <section class="content-header">
     <div class="nav-tabs-custom">
@@ -40,13 +40,6 @@
                         </div>
                     </div>
                     <div class="form-group form-inline">
-                        <#if sessionAdminUserInfo??&&sessionAdminUserInfo.partnerId=='0'>
-                            <div id="inputOperatorPartnerDiv" style="display:inline">
-                                <label id="inputOperatorPartnerLabel" >
-                                    运营商ID：<input type="text" name="inputOperatorPartnerId" value="<#if paramMap.inputOperatorPartnerId??>${paramMap.inputOperatorPartnerId}</#if>"class="form-control input-sm input-append date" id="inputOperatorPartnerId" >
-                                </label>
-                            </div>
-                        </#if>
                         <div id="topPartnerDiv" style="display:inline">
                             <label id="topPartnerLabel" >
                                 代理商ID：<input type="text" name="topPartnerId" value="<#if paramMap.topPartnerId??>${paramMap.topPartnerId}</#if>"class="form-control input-sm input-append date" id="topPartnerId" >
@@ -62,16 +55,10 @@
                                 商户名：<input type="text" name="partnerName" value="<#if paramMap.partnerName??>${paramMap.partnerName}</#if>"class="form-control input-sm input-append date" id="partnerId" >
                             </label>
                         </div>
-                        <select name="tbname" id="tbname" class="form-control input-sm">
-                                <option value="current"<#if paramMap.tbname?? && paramMap.tbname=="current">selected</#if>>实时数据</option>
-                                <option value="history" <#if paramMap.tbname?? && paramMap.tbname=="history">selected</#if>>历史数据</option>
-                        </select>
                         &nbsp;&nbsp;
-                        <#if sessionAdminUserInfo??&&sessionAdminUserInfo.bindIp=='1'>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="splitPayment" name="splitPayment" <#if paramMap.splitPayment??&&paramMap.splitPayment=='1'>checked</#if> value="1" />分拆支付
-                            </label>
-                        </#if>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="splitPayment" name="splitPayment" <#if paramMap.splitPayment??&&paramMap.splitPayment=='1'>checked</#if> value="1" />分拆支付
+                        </label>
                     </div>
 
                     <div class="formBtm">
@@ -433,7 +420,7 @@
                             <td>${list.TOTAL_TYPE_CORRECT_SUB_FROM_MERCHANT}</td>
                         <#--冲正扣款-->
                         </#if>
-                                <td><a href="finance/exportBillingStatics?type=${paramMap.type}&<#if paramMap.type??&&paramMap.type=="merchant">partnerId=${list.PARTNER_ID}<#else>confirmTime=${list.CONFIRM_TIME}&partnerId=${list.PARTNER_ID}</#if>&tbname=${paramMap.tbname}&startTime=${paramMap.startTime}&endTime=${paramMap.endTime}<#if paramMap.splitPayment??>&splitPayment=${paramMap.splitPayment}</#if>" title="导出财务报表" class="fa fa-file-excel-o"></a></td>
+                                <td><a href="finance/exportBillingStatics?type=${paramMap.type}&<#if paramMap.type??&&paramMap.type=="merchant">partnerId=${list.PARTNER_ID}<#else>confirmTime=${list.CONFIRM_TIME}&partnerId=${list.PARTNER_ID}</#if>&startTime=${paramMap.startTime}&endTime=${paramMap.endTime}<#if paramMap.splitPayment??>&splitPayment=${paramMap.splitPayment}</#if>" title="导出财务报表" class="fa fa-file-excel-o"></a></td>
                             </tr>
                     </#list>
                 <tr style="background:#C1FFC1">

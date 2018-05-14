@@ -13,7 +13,6 @@
     <!-- Bootstrap core CSS -->
     <link href="static/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/main.css" rel="stylesheet">
-    <#--<link rel="icon" type="image/x-icon" href="/favicon.ico">-->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="static/plugins/html5shiv.min.js"></script>
@@ -86,10 +85,10 @@
     function makeCode () {
         var elText = document.getElementById("othAmt");
         var amt = $.trim(elText.value);
-        var vAmt = (amt).toFixed(2);
+        var vAmt = Number(amt).toFixed(2);
         if (amt == '') {
             amt = $("input[name='amount']:checked").val();
-            vAmt = (amt).toFixed(2);
+            vAmt = Number(amt).toFixed(2);
         }
         if(vAmt == 'NaN' || vAmt <= 0) {
             alert("输入金额不正确");

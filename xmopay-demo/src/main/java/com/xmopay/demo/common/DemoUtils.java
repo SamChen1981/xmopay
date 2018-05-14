@@ -126,7 +126,6 @@ public class DemoUtils {
             out.println("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
             out.println("<title>Online for payment is jumping to the bank page, please wait...</title>");
             out.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-//            out.println("<link rel=\"shortcut icon\" href=\"/default/assets/images/favicon.ico\">");
             out.println("<link rel=\"stylesheet\" href=\"/static/plugins/bootstrap/css/bootstrap.min.css\">");
             out.println("</head>");
             out.println("</body>");
