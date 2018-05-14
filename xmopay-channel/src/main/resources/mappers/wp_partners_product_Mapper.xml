@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.dao.PartnerProductDao">
+  <resultMap id="BaseResultMap" type="PartnerProductDto">
+    <id column="PPID" jdbcType="INTEGER" property="ppId" />
+    <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+    <result column="PARTNER_NAME" jdbcType="VARCHAR" property="partnerName" />
+    <result column="PRODUCT_TYPE" jdbcType="VARCHAR" property="productType" />
+    <result column="CHANNEL_CODE" jdbcType="VARCHAR" property="channelCode" />
+    <result column="CHANNEL_NAME" jdbcType="VARCHAR" property="channelName" />
+    <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+    <result column="BANK_NAME" jdbcType="VARCHAR" property="bankName" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="RATE" jdbcType="DECIMAL" property="rate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    PPID, PARTNER_ID, PARTNER_NAME, PRODUCT_TYPE, CHANNEL_CODE, CHANNEL_NAME, UPDATE_TIME,
+    CREATE_TIME, STATUS, RATE, BANK_CODE, BANK_NAME
+  </sql>
+
+  <select id="getPartnerProduct" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM wp_partners_product
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="partnerId != null and partnerId != ''"> AND  PARTNER_ID = #{partnerId}</if>
+      <if test="channelCode != null and channelCode != ''"> AND  CHANNEL_CODE = #{channelCode}</if>
+      <if test="bankCode != null and bankCode != ''"> AND  BANK_CODE = #{bankCode}</if>
+      <if test="status != null"> AND STATUS = #{status}</if>
+    </trim>
+    LIMIT 1
+  </select>
+
+  <select id="getPartnerProductList" parameterType="PartnerProductDto" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from wp_partners_product
+    <trim prefix="WHERE" prefixOverrides="AND | OR">
+      <if test="partnerId != null and partnerId != ''"> AND  PARTNER_ID = #{partnerId}</if>
+      <if test="channelCode != null and channelCode != ''"> AND  CHANNEL_CODE = #{channelCode}</if>
+      <if test="bankCode != null and bankCode != ''"> AND  BANK_CODE = #{bankCode}</if>
+      <if test="status != null"> AND STATUS = #{status}</if>
+    </trim>
+  </select>
+</mapper>

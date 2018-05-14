@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.openapi.dao.PartnerDao">
+
+    <resultMap id="partnerInfoResultMap" type="PartnerDto">
+        <id column="PTID" jdbcType="INTEGER" property="ptid"/>
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId"/>
+        <result column="PARTNER_NAME" jdbcType="VARCHAR" property="partnerName"/>
+        <result column="PARTNER_INFO" jdbcType="VARCHAR" property="partnerInfo"/>
+        <result column="PARTNER_MD5_KEY" jdbcType="VARCHAR" property="partnerMd5Key"/>
+        <result column="PARTNER_AES_KEY" jdbcType="VARCHAR" property="partnerAesKey"/>
+        <result column="API_WHITE_IP" jdbcType="VARCHAR" property="apiWhiteIp"/>
+        <result column="XMOPAY_PRIVATE_KEY" jdbcType="LONGVARCHAR" property="xmoPayPrivateKey"/>
+        <result column="XMOPAY_PUBLIC_KEY" jdbcType="LONGVARCHAR" property="xmoPayPublicKey"/>
+        <result column="XMOPAY_PUBLIC_KEY" jdbcType="LONGVARCHAR" property="partnerPublicKey"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="API_STATUS" jdbcType="INTEGER" property="apiStatus"/>
+        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+
+    <sql id="partner_column_List">
+        PTID,
+        PARTNER_ID,
+        PARTNER_NAME,
+        PARTNER_INFO,
+        XMOPAY_PRIVATE_KEY,
+        XMOPAY_PUBLIC_KEY,
+        PARTNER_MD5_KEY,
+        PARTNER_AES_KEY,
+        CREATE_TIME,
+        UPDATE_TIME,
+        API_WHITE_IP,
+        API_STATUS,
+        STATUS
+    </sql>
+
+    <select id="getPartnerInfo" resultMap="partnerInfoResultMap" parameterType="PartnerDto">
+        SELECT <include refid="partner_column_List"/> FROM wp_partners
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="status != null and status != ''"> and STATUS=#{status}</if>
+            <if test="partnerId != null and partnerId != ''"> and PARTNER_ID=#{partnerId}</if>
+        </trim>
+    </select>
+
+    <select id="getPartnerAccount" resultMap="partnerInfoResultMap" parameterType="PartnerDto">
+        select CURRENCY, BALANCE, FREEZE_BALANCE, LAST_TRADE from wp_partners_account
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="currency != null and currency != ''"> and CURRENCY=#{currency}</if>
+            <if test="partnerId != null and partnerId != ''"> and PARTNER_ID=#{partnerId}</if>
+        </trim>
+    </select>
+</mapper>

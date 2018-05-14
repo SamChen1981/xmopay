@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.PartnerProductDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.PartnerProductDto">
+        <id column="PPID" jdbcType="INTEGER" property="ppid" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="PARTNER_NAME" jdbcType="VARCHAR" property="partnerName" />
+        <result column="PRODUCT_TYPE" jdbcType="VARCHAR" property="productType" />
+        <result column="CHANNEL_CODE" jdbcType="VARCHAR" property="channelCode" />
+        <result column="CHANNEL_NAME" jdbcType="VARCHAR" property="channelName" />
+        <result column="RATE" jdbcType="DECIMAL" property="rate" />
+        <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+        <result column="BANK_NAME" jdbcType="VARCHAR" property="bankName" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="STATUS" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        PPID, PARTNER_ID, PARTNER_NAME, PRODUCT_TYPE, CHANNEL_CODE, CHANNEL_NAME, RATE,
+        BANK_CODE, BANK_NAME, UPDATE_TIME, CREATE_TIME, STATUS
+    </sql>
+
+    <select id="getPartnerProductList" parameterType="com.xmopay.admincp.dto.PartnerProductDto" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" />
+        from wp_partners_product as wpp
+        <where>
+            <if test="partnerId != null and partnerId != ''">             AND wpp.PARTNER_ID   = #{partnerId}            </if>
+            <if test="status != null or status == 0">       and wpp.STATUS  = #{status}              </if>
+        </where>
+        order by UPDATE_TIME desc
+    </select>
+
+    <select id="getPartnerProduct" parameterType="com.xmopay.admincp.dto.PartnerProductDto" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+        from wp_partners_product
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="ppid != null">                                      and PPID              = #{ppid,jdbcType=INTEGER}  </if>
+            <if test="partnerId != null and partnerId != ''">             and PARTNER_ID        = #{partnerId}              </if>
+            <if test="partnerName != null and partnerName != ''">         and PARTNER_NAME      = #{partnerName}            </if>
+            <if test="channelCode != null and channelCode != ''">         and CHANNEL_CODE      = #{channelCode}            </if>
+            <if test="productType != null and productType != ''">         and PRODUCT_TYPE      = #{productType}            </if>
+            <if test="status != null">                             and STATUS    = #{status}          </if>
+        </trim>
+    </select>
+
+    <insert id="insertPartnerProduct" parameterType="com.xmopay.admincp.dto.PartnerProductDto">
+        insert into wp_partners_product(PARTNER_ID, PARTNER_NAME, PRODUCT_TYPE, CHANNEL_CODE, CHANNEL_NAME, RATE,
+          BANK_CODE, BANK_NAME, UPDATE_TIME, CREATE_TIME, STATUS)
+        values(#{partnerId}, #{partnerName}, #{productType}, #{channelCode}, #{channelName}, #{rate},
+          #{bankCode}, #{bankName}, #{updateTime}, #{createTime}, #{status})
+    </insert>
+
+    <update id="updatePartnerProduct" parameterType="com.xmopay.admincp.dto.PartnerProductDto">
+        update wp_partners_product
+        <set>
+            <if test="partnerName != null"> PARTNER_NAME = #{partnerName,jdbcType=VARCHAR}, </if>
+            <if test="productType != null">PRODUCT_TYPE = #{productType,jdbcType=VARCHAR},</if>
+            <if test="channelCode != null">CHANNEL_CODE = #{channelCode,jdbcType=VARCHAR},</if>
+            <if test="channelName != null">CHANNEL_NAME = #{channelName,jdbcType=VARCHAR},</if>
+            <if test="bankCode != null">BANK_CODE = #{bankCode,jdbcType=VARCHAR},</if>
+            <if test="bankName != null">BANK_NAME = #{bankName,jdbcType=VARCHAR},</if>
+            <if test="rate != null">RATE = #{rate,jdbcType=DECIMAL},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="status != null">STATUS = #{status,jdbcType=INTEGER},</if>
+        </set>
+        where PPID = #{ppid,jdbcType=INTEGER} and PARTNER_ID = #{partnerId,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

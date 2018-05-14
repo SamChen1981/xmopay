@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.AdminRoleDao">
+
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.AdminRoleDto">
+        <id column="RID" jdbcType="INTEGER" property="rid" />
+        <result column="ROLENAME" jdbcType="VARCHAR" property="roleName" />
+        <result column="ROLEDESC" jdbcType="VARCHAR" property="roleDesc" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateLine" />
+    </resultMap>
+
+    <parameterMap id="BaseParameterMap" type="com.xmopay.admincp.dto.AdminRoleDto">
+        <parameter property="rid" resultMap="BaseResultMap"/>
+        <parameter property="roleName" resultMap="BaseResultMap"/>
+        <parameter property="roleDesc" resultMap="BaseResultMap"/>
+        <parameter property="dateLine" resultMap="BaseResultMap"/>
+    </parameterMap>
+
+    <sql id="Base_Column_List">
+        RID, ROLENAME, ROLEDESC, DATELINE
+    </sql>
+
+    <!--****************-->
+    <select id="getAdminRoleList"  parameterType="com.xmopay.admincp.dto.AdminRoleDto" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from sys_admin_role
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="roleName != '超级管理员' ">ROLENAME not like '%超级管理员%'</if>
+        </trim>
+        order by DATELINE desc
+    </select>
+
+    <!-- 按id得到用户角色 -->
+    <select id="getUserRole" parameterType="com.xmopay.admincp.dto.AdminRoleDto" resultMap="BaseResultMap">
+        SELECT *
+        FROM sys_admin_role
+        <where>
+            <if test="rid != null">and RID = #{rid} </if>
+            <if test="roleName != null and roleName != ''">and ROLENAME = #{roleName} </if>
+        </where>
+    </select>
+
+    <!-- 增加角色 -->
+    <insert id="insertRole" parameterType="com.xmopay.admincp.dto.AdminRoleDto">
+        insert into sys_admin_role
+          (ROLENAME, ROLEDESC, DATELINE)
+        values
+          (#{roleName}, #{roleDesc}, #{dateLine})
+    </insert>
+
+    <!--更新角色信息-->
+    <update id="updateRole" parameterType="com.xmopay.admincp.dto.AdminRoleDto">
+        update sys_admin_role
+        set ROLENAME = #{roleName}, ROLEDESC = #{roleDesc}, DATELINE = #{dateLine}
+        where rid = #{rid}
+    </update>
+
+    <!--删除角色信息 ***** -->
+    <delete id="deleteRoleByRid" parameterType="java.lang.Integer">
+        delete from sys_admin_role
+        where RID = #{_parameter}
+    </delete>
+
+</mapper>

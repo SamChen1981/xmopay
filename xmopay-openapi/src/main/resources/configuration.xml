@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+   <typeAliases>
+       <typeAlias type="com.xmopay.openapi.dto.TradeOrderDto" alias="TradeOrderDto"/>
+       <typeAlias type="com.xmopay.openapi.dto.PartnerAccountDto" alias="PartnerAccountDto"/>
+       <typeAlias type="com.xmopay.openapi.dto.GatewayAgencyDto" alias="GatewayAgencyDto"/>
+       <typeAlias type="com.xmopay.openapi.dto.GatewayChannelDto" alias="GatewayChannelDto"/>
+       <typeAlias type="com.xmopay.openapi.dto.PartnerDto" alias="PartnerDto"/>
+       <typeAlias type="com.xmopay.openapi.dto.MessageQueueDto" alias="MessageQueueDto"/>
+       <typeAlias type="com.xmopay.openapi.dto.PartnerProductDto" alias="PartnerProductDto"/>
+   </typeAliases>
+</configuration>

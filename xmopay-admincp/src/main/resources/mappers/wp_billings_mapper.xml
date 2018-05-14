@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.BillingsDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.BillingsDto">
+        <id column="BID" jdbcType="BIGINT" property="bid" />
+        <result column="ORDER_SN" jdbcType="VARCHAR" property="orderSn" />
+        <result column="BILLING_SN" jdbcType="VARCHAR" property="billingSn" />
+        <result column="BILL_TYPE" jdbcType="INTEGER" property="billType" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="PARTNER_NAME" jdbcType="VARCHAR" property="partnerName" />
+        <result column="TRADE_AMOUNT" jdbcType="DECIMAL" property="tradeAmount" />
+        <result column="TRADE_FEE" jdbcType="DECIMAL" property="tradeFee" />
+        <result column="PAYMENT" jdbcType="DECIMAL" property="payment" />
+        <result column="ACCOUNT_AMOUNT" jdbcType="DECIMAL" property="accountAmount" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="TRADE_TIME" jdbcType="TIMESTAMP" property="tradeTime" />
+        <result column="PAY_STATUS" jdbcType="INTEGER" property="payStatus" />
+        <result column="PAY_TYPE" jdbcType="INTEGER" property="payType" />
+        <result column="BANK_CODE" jdbcType="INTEGER" property="bankCode" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    BID, ORDER_SN, BILLING_SN, BILL_TYPE, PARTNER_ID, PARTNER_NAME, TRADE_AMOUNT,
+    TRADE_FEE, PAYMENT, ACCOUNT_AMOUNT, REMARK, TRADE_TIME, PAY_STATUS, PAY_TYPE, BANK_CODE
+  </sql>
+
+    <select id="getBillingsList" parameterType="com.xmopay.admincp.dto.BillingsDto" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from wp_billings
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="bid != null ">                           and BID           =  #{bid}             </if>
+            <if test="orderSn != null and orderSn != ''">      and ORDER_SN      =  #{orderSn}         </if>
+            <if test="billingSn != null and billingSn != ''">  and BILLING_SN    =  #{billingSn}       </if>
+            <if test="partnerId != null and partnerId != ''">  and PARTNER_ID    =  #{partnerId}       </if>
+            <if test="billType != null  ">                     and BILL_TYPE     =  #{billType}        </if>
+            <if test="startTime != null and startTime != ''">  and TRADE_TIME    &gt;= #{startTime}       </if>
+            <if test="endTime != null and endTime != ''">      and TRADE_TIME    &lt;= #{endTime}         </if>
+            <if test="payStatus != null or payStatus == 0">    and PAY_STATUS    =  #{payStatus}       </if>
+
+            <if test="minPayMoney != null and minPayMoney != ''">  and TRADE_AMOUNT  &gt;= #{minPayMoney}     </if>
+            <if test="maxPayMoney != null and maxPayMoney != ''">  and TRADE_AMOUNT  &lt;= #{maxPayMoney}     </if>
+        </trim>
+        ORDER BY TRADE_TIME DESC, BID DESC
+    </select>
+
+    <!--财务明细底部汇总信息统计-->
+    <select id="getBillingsTotal" parameterType="com.xmopay.admincp.dto.BillingsDto" resultType="HashMap">
+        select SUM(CASE WHEN PAY_STATUS=1 THEN TRADE_AMOUNT ELSE 0 END) AS TRADE_SUCCESS,COUNT(CASE WHEN PAY_STATUS=1 THEN 1 ELSE 0 END) AS SUCCESS_NUM
+        FROM wp_billings
+        <where>
+            <if test="bid != null ">                           and BID           =  #{bid}             </if>
+            <if test="orderSn != null and orderSn != ''">      and ORDER_SN      =  #{orderSn}         </if>
+            <if test="billingSn != null and billingSn != ''">  and BILLING_SN    =  #{billingSn}       </if>
+            <if test="partnerId != null and partnerId != ''">  and PARTNER_ID    =  #{partnerId}       </if>
+            <if test="billType != null  ">                     and BILL_TYPE     =  #{billType}        </if>
+            <if test="startTime != null and startTime != ''">  and TRADE_TIME    &gt;= #{startTime}       </if>
+            <if test="endTime != null and endTime != ''">      and TRADE_TIME    &lt;= #{endTime}         </if>
+            <if test="payStatus != null or payStatus == 0">    and PAY_STATUS    =  #{payStatus}       </if>
+            <if test="minPayMoney != null and minPayMoney != ''">  and TRADE_AMOUNT  &gt;= #{minPayMoney}     </if>
+            <if test="maxPayMoney != null and maxPayMoney != ''">  and TRADE_AMOUNT  &lt;= #{maxPayMoney}     </if>
+        </where>
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

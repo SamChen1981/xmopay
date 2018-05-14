@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.AdminMenuDao">
+
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.AdminMenuDto">
+        <id column="MENU_ID" jdbcType="INTEGER" property="menuId" />
+        <result column="MENU_CODE" jdbcType="VARCHAR" property="menuCode" />
+        <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+        <result column="MENU_DESC" jdbcType="VARCHAR" property="menuDesc" />
+        <result column="MENU_URL" jdbcType="VARCHAR" property="menuUrl" />
+        <result column="MENU_PARENT" jdbcType="INTEGER" property="menuParent" />
+        <result column="MENU_FLAG" jdbcType="INTEGER" property="menuFlag" />
+        <result column="DISPLAYORDER" jdbcType="INTEGER" property="displayOrder" />
+        <result column="STATUS" jdbcType="INTEGER" property="status" />
+    </resultMap>
+
+    <parameterMap id="BaseParameterMap" type="com.xmopay.admincp.dto.AdminMenuDto">
+        <parameter property="menuId" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuCode" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuName" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuDesc" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuDesc" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuUrl" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuParent" resultMap="BaseResultMap"></parameter>
+        <parameter property="menuFlag" resultMap="BaseResultMap"></parameter>
+        <parameter property="displayOrder" resultMap="BaseResultMap"></parameter>
+        <parameter property="status" resultMap="BaseResultMap"></parameter>
+    </parameterMap>
+
+    <sql id="Base_Column_List">
+        MENU_ID, MENU_CODE, MENU_NAME, MENU_DESC, MENU_URL, MENU_PARENT, MENU_FLAG, DISPLAYORDER, STATUS
+    </sql>
+
+    <select id="getParentMenus" resultMap="BaseResultMap">
+        select
+         <include refid="Base_Column_List"/>
+        from sys_admin_menus where MENU_FLAG=0 ORDER BY DISPLAYORDER ASC
+    </select>
+
+    <select id="findMenusByRoleId" parameterType="integer" resultMap="BaseResultMap">
+        SELECT M.*
+        FROM sys_admin_menus M
+        WHERE menu_id IN(SELECT A.menu_id FROM sys_admin_auth A WHERE A.role_id=#{roleId})
+        and STATUS = 1 ORDER BY M.displayorder ASC
+    </select>
+
+    <!--获取所有菜单列表-->
+    <select id="getMenusList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from sys_admin_menus
+        order by DISPLAYORDER ASC
+    </select>
+
+    <!--根据menu_id 获取菜单详情-->
+    <select id="getMenusByMId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from sys_admin_menus
+        where MENU_ID = #{_parameter}
+        ORDER BY DISPLAYORDER ASC
+    </select>
+
+    <select id="ajaxByMenusValidate" parameterType="com.xmopay.admincp.dto.AdminMenuDto" resultMap="BaseResultMap">
+        select * from sys_admin_menus
+        where MENU_URL = #{menuUrl}
+          <if test="menuId != null "> and menu_id!=#{menuId}</if>
+        ORDER BY DISPLAYORDER ASC
+    </select>
+
+    <!--添加-->
+    <insert id="insertMenus" parameterMap="BaseParameterMap">
+        insert into sys_admin_menus
+        (MENU_CODE, MENU_NAME, MENU_DESC, MENU_URL, MENU_PARENT, MENU_FLAG, DISPLAYORDER, STATUS)
+        values
+        (#{menuCode}, #{menuName}, #{menuDesc}, #{menuUrl}, #{menuParent}, #{menuFlag}, #{displayOrder}, #{status})
+    </insert>
+
+    <update id="updateMenu" parameterMap="BaseParameterMap">
+        update sys_admin_menus
+        set
+        MENU_CODE    = #{menuCode},
+        MENU_NAME    = #{menuName},
+        MENU_DESC    = #{menuDesc},
+        MENU_URL     = #{menuUrl},
+        MENU_PARENT  = #{menuParent},
+        MENU_FLAG    = #{menuFlag},
+        DISPLAYORDER = #{displayOrder},
+        STATUS       = #{status}
+        where MENU_ID = #{menuId}
+    </update>
+
+    <!-- 根据所给信息查询菜单信息 -->
+    <select id="getAdminMenusList" parameterType="com.xmopay.admincp.dto.AdminMenuDto" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        from sys_admin_menus
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="menuParent != null or menuParent == 0"> and MENU_PARENT = #{menuParent} </if>
+        </trim>
+    </select>
+
+    <!-- 删除菜单 -->
+    <delete id="deleteAdminMenu" parameterType="com.xmopay.admincp.dto.AdminMenuDto">
+        DELETE FROM sys_admin_menus
+        where MENU_ID = #{menuId,jdbcType=INTEGER}
+        <if test="menuParent != null or menuParent == 0">  and MENU_PARENT = #{menuParent} </if>
+        <if test="menuCode != null">   and MENU_CODE = #{menuCode}  </if>
+        <if test="menuName != null">   and MENU_NAME = #{menuName}  </if>
+        <if test="menuUrl != null">    and MENU_URL = #{menuUrl} </if>
+        <if test="menuDesc != null">    and MENU_DESC = #{menuDesc} </if>
+    </delete>
+</mapper>

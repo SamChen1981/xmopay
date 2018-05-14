@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.GatewayAgencyDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.GatewayAgencyDto">
+        <id column="GAID" jdbcType="INTEGER" property="gaid" />
+        <result column="AGENCY_CODE" jdbcType="VARCHAR" property="agencyCode" />
+        <result column="AGENCY_NAME" jdbcType="VARCHAR" property="agencyName" />
+        <result column="AGENCY_PARAMS" jdbcType="VARCHAR" property="agencyParams" />
+        <result column="AGENCY_STATUS" jdbcType="INTEGER" property="agencyStatus" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+
+        <collection property="gatewayChannelDtos" ofType="com.xmopay.admincp.dto.GatewayChannelDto">
+            <id property="channelId" column="CHANNEL_ID" jdbcType="INTEGER"/>
+            <result property="agencyId" column="AGENCY_ID" jdbcType="INTEGER"/>
+            <result property="channelCode" column="CHANNEL_CODE" jdbcType="VARCHAR"/>
+            <result property="channelName" column="CHANNEL_NAME" jdbcType="VARCHAR"/>
+            <result property="channelType" column="CHANNEL_TYPE" jdbcType="INTEGER"/>
+            <result property="channelKey" column="CHANNEL_KEY" jdbcType="VARCHAR"/>
+            <result property="channelSecret" column="CHANNEL_SECRET" jdbcType="VARCHAR"/>
+            <result property="channelParams" column="CHANNEL_PARAMS" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="findGatewayAgencyList" parameterType="com.xmopay.admincp.dto.GatewayAgencyDto" resultMap="BaseResultMap">
+        SELECT
+        <include refid="sql_base_fields"/>
+        FROM wp_gateway_agency
+        WHERE
+        AGENCY_STATUS = #{agencyStatus}
+        order by UPDATE_TIME desc
+    </select>
+
+    <select id="getGatewayAgencyList" parameterType="com.xmopay.admincp.dto.GatewayAgencyDto" resultMap="BaseResultMap">
+        SELECT
+        <include refid="sql_base_fields"/>
+        FROM wp_gateway_agency
+        <include refid="sql_query_statement"/>
+        order by UPDATE_TIME desc
+    </select>
+
+    <select id="getGatewayAgencyById" resultMap="BaseResultMap" parameterType="int">
+        select
+        <include refid="sql_base_fields"/>
+        from wp_gateway_agency
+        where GAID = #{gaid}
+    </select>
+
+    <insert id="insertGatewayAgency" parameterType="com.xmopay.admincp.dto.GatewayAgencyDto">
+        insert into wp_gateway_agency
+        (AGENCY_CODE, AGENCY_NAME, AGENCY_PARAMS, AGENCY_STATUS, UPDATE_TIME, DATELINE)
+        values
+        (#{agencyCode}, #{agencyName}, #{agencyParams}, #{agencyStatus}, #{updateTime}, #{dateline})
+    </insert>
+
+    <update id="updateGatewayAgency" parameterType="com.xmopay.admincp.dto.GatewayAgencyDto">
+        update wp_gateway_agency
+        <set>
+            <if test="agencyCode != null and agencyCode != ''">AGENCY_CODE = #{agencyCode},</if>
+            <if test="agencyName != null and agencyName != ''">AGENCY_NAME = #{agencyName},</if>
+            <if test="agencyParams != null and agencyParams != ''">AGENCY_PARAMS = #{agencyParams},</if>
+            <if test="agencyStatus != null">AGENCY_STATUS = #{agencyStatus},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime}</if>
+        </set>
+        where GAID = #{gaid}
+    </update>
+
+    <sql id="sql_base_fields">
+        GAID, AGENCY_CODE, AGENCY_NAME, AGENCY_PARAMS, AGENCY_STATUS, UPDATE_TIME, DATELINE
+    </sql>
+
+    <sql id="sql_query_statement">
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="agencyName != null and agencyName != ''"> and AGENCY_NAME LIKE concat('%',#{agencyName},'%')</if>
+        </trim>
+    </sql>
+</mapper>

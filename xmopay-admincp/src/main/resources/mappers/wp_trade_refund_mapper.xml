@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.RefundDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.RefundDto">
+        <id column="TOID" jdbcType="INTEGER" property="toid" />
+        <result column="REFUND_TYPE"   jdbcType="INTEGER"   property="refundType" />
+        <result column="ORDER_SN"      jdbcType="VARCHAR"   property="orderSn" />
+        <result column="BILLING_SN"    jdbcType="VARCHAR"   property="billingSn" />
+        <result column="PARTNER_ID"    jdbcType="VARCHAR"   property="partnerId" />
+        <result column="PARTNER_NAME"  jdbcType="VARCHAR"   property="partnerName" />
+        <result column="ORDER_AMOUNT"  jdbcType="DECIMAL"   property="orderAmount" />
+        <result column="UPDATE_TIME"   jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="DATELINE"      jdbcType="TIMESTAMP" property="dateline" />
+        <result column="OUT_TRADE_NO"  jdbcType="VARCHAR"   property="outTradeNo" />
+        <result column="REMARK"        jdbcType="VARCHAR"   property="remark" />
+        <result column="REFUND_STATUS" jdbcType="INTEGER"   property="refundStatus" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    TOID, REFUND_TYPE, ORDER_SN, BILLING_SN, PARTNER_ID, PARTNER_NAME, ORDER_AMOUNT,
+    UPDATE_TIME, DATELINE, OUT_TRADE_NO, REMARK, REFUND_STATUS
+  </sql>
+    <select id="getRefundList" parameterType="com.xmopay.admincp.dto.RefundDto" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from wp_trade_refund
+        <where>
+            <if test="partnerId != null and partnerId != ''">       and PARTNER_ID    = #{partnerId}    </if>
+            <if test="orderSn != null and orderSn != ''">           and ORDER_SN      = #{orderSn}      </if>
+            <if test="billingSn != null and billingSn != ''">       and BILLING_SN    = #{billingSn}    </if>
+            <if test="outTradeNo != null and outTradeNo != ''">     and OUT_TRADE_NO  = #{outTradeNo}   </if>
+            <if test="startTime != null and startTime != ''">       and DATELINE      &gt;= #{startTime}   </if>
+            <if test="endTime != null and endTime != ''">           and DATELINE      &lt;= #{endTime}     </if>
+            <if test="minPayMoney != null and minPayMoney != ''">   and ORDER_AMOUNT  &gt;= #{minPayMoney} </if>
+            <if test="maxPayMoney != null and maxPayMoney != ''">   and ORDER_AMOUNT  &lt;= #{maxPayMoney} </if>
+            <if test="refundType != null  or refundType == 0">      and REFUND_TYPE   = #{refundType}   </if>
+            <if test="refundStatus != null  or refundStatus == 0">  and REFUND_STATUS = #{refundStatus} </if>
+        </where>
+        ORDER BY DATELINE DESC
+    </select>
+
+    <!--获取退款信息详情-->
+    <select id="getRefundInfo" parameterType="com.xmopay.admincp.dto.RefundDto" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" />
+        from wp_trade_refund
+        <where>
+            <if test="orderSn != null and orderSn != ''">                                and ORDER_SN      = #{orderSn}      </if>
+            <if test="partnerId != null and partnerId != ''">                            and PARTNER_ID    = #{partnerId}    </if>
+            <if test="billingSn != null and billingSn != ''">                            and BILLING_SN    = #{billingSn}    </if>
+            <if test="outTradeNo != null and outTradeNo != ''">                          and OUT_TRADE_NO  = #{outTradeNo}   </if>
+            <if test="startTime != null and startTime != ''">                            and DATELINE      &gt;= #{startTime}   </if>
+            <if test="endTime != null and endTime != ''">                                and DATELINE      &lt;= #{endTime}     </if>
+            <if test="minPayMoney != null and minPayMoney != ''">                        and ORDER_AMOUNT  &gt;= #{minPayMoney} </if>
+            <if test="maxPayMoney != null and maxPayMoney != ''">                        and ORDER_AMOUNT  &lt;= #{maxPayMoney} </if>
+            <if test="refundType != null or refundType == 0">       and REFUND_TYPE   = #{refundType}   </if>
+            <if test="refundStatus != null  or refundStatus == 0"> and REFUND_STATUS = #{refundStatus} </if>
+        </where>
+    </select>
+
+    <!--修改退款订单信息-->
+    <update id="updateRefundOrder" parameterType="com.xmopay.admincp.dto.RefundDto">
+        update wp_trade_refund
+        <set>
+            <if test="refundType != null">                         REFUND_TYPE   = #{refundType},   </if>
+            <if test="partnerName != null and partnerName != ''">  PARTNER_NAME  = #{partnerName},  </if>
+            <if test="orderAmount != null">                        ORDER_AMOUNT  = #{orderAmount},  </if>
+            <if test="updateTime != null">                         UPDATE_TIME   = #{updateTime},   </if>
+            <if test="outTradeNo != null and outTradeNo != ''">    OUT_TRADE_NO  = #{outTradeNo},   </if>
+            <if test="billingSn != null and billingSn != ''">      BILLING_SN    = #{billingSn},    </if>
+            <if test="remark != null and remark != ''">            REMARK        = #{remark},       </if>
+            <if test="refundStatus != null  or refundStatus == 0"> REFUND_STATUS = #{refundStatus}, </if>
+        </set>
+        where  ORDER_SN = #{orderSn}
+        <if test="partnerId != null and partnerId != ''"> and PARTNER_ID  = #{partnerId}    </if>
+
+    </update>
+
+    <insert id="insertRefund" parameterType="com.xmopay.admincp.dto.RefundDto">
+        insert into wp_trade_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="toid != null">        TOID,         </if>
+            <if test="refundType != null">  REFUND_TYPE,  </if>
+            <if test="orderSn != null">     ORDER_SN,     </if>
+            <if test="billingSn != null">   BILLING_SN,   </if>
+            <if test="partnerId != null">   PARTNER_ID,   </if>
+            <if test="partnerName != null"> PARTNER_NAME, </if>
+            <if test="orderAmount != null"> ORDER_AMOUNT, </if>
+            <if test="updateTime != null">  UPDATE_TIME,  </if>
+            <if test="dateline != null">    DATELINE,     </if>
+            <if test="outTradeNo != null">  OUT_TRADE_NO, </if>
+            <if test="remark != null">      REMARK,       </if>
+            <if test="refundStatus != null">REFUND_STATUS,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="toid != null">        #{toid,jdbcType=INTEGER},        </if>
+            <if test="refundType != null">  #{refundType,jdbcType=INTEGER},  </if>
+            <if test="orderSn != null">     #{orderSn,jdbcType=VARCHAR},     </if>
+            <if test="billingSn != null">   #{billingSn,jdbcType=VARCHAR},   </if>
+            <if test="partnerId != null">   #{partnerId,jdbcType=VARCHAR},   </if>
+            <if test="partnerName != null"> #{partnerName,jdbcType=VARCHAR}, </if>
+            <if test="orderAmount != null"> #{orderAmount,jdbcType=DECIMAL}, </if>
+            <if test="updateTime != null">  #{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="dateline != null">    #{dateline,jdbcType=TIMESTAMP},  </if>
+            <if test="outTradeNo != null">  #{outTradeNo,jdbcType=VARCHAR},  </if>
+            <if test="remark != null">      #{remark,jdbcType=VARCHAR},      </if>
+            <if test="refundStatus != null">#{refundStatus,jdbcType=INTEGER},</if>
+        </trim>
+    </insert>
+
+
+</mapper>

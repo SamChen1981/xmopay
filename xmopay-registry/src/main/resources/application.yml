@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: xmopay-registry
+#  security:
+#    user:
+#      name: xmopay
+#      password: xmopay8761
+server:
+  port: 8761
+#security:
+#  user:
+#    password: xmopay9441
+#    name: xmopay
+#  basic:
+#    enabled: true
+eureka:
+#  instance:
+#    hostname: 127.0.0.1
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+  serviceUrl:
+    defaultZone: http://${eureka.instance.hostname}:8761/eureka/,http://${eureka.instance.hostname}:8762/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.AdminUserDao">
+
+    <resultMap id="AdminUserResultMap" type="com.xmopay.admincp.dto.AdminUserDto">
+        <id column="MUID" jdbcType="INTEGER" property="muId" />
+        <result column="ROLEID"     jdbcType="INTEGER"   property="roleId" />
+        <result column="USERNAME"   jdbcType="VARCHAR"   property="userName" />
+        <result column="PASSWORD"   jdbcType="VARCHAR"   property="password" />
+        <result column="BINDIP"     jdbcType="VARCHAR"   property="bindIp" />
+        <result column="LASTIP"     jdbcType="VARCHAR"   property="lastIp" />
+        <result column="LASTLOGIN"  jdbcType="TIMESTAMP" property="lastLogin" />
+        <result column="SALTS"      jdbcType="CHAR"      property="salts" />
+        <result column="STATUS"     jdbcType="INTEGER"   property="status" />
+        <result column="GOOGLECODE" jdbcType="VARCHAR"   property="googleCode" />
+
+        <association property="adminRoleDto" javaType="com.xmopay.admincp.dto.AdminRoleDto">
+            <id column="RID"          jdbcType="INTEGER"   property="rid" />
+            <result column="ROLENAME" jdbcType="VARCHAR"   property="roleName" />
+            <result column="ROLEDESC" jdbcType="VARCHAR"   property="roleDesc" />
+            <result column="DATELINE" jdbcType="TIMESTAMP" property="dateLine" />
+        </association>
+    </resultMap>
+
+    <parameterMap id="BaseParameterMap" type="com.xmopay.admincp.dto.AdminUserDto">
+        <parameter property="muId" resultMap="AdminUserResultMap"/>
+        <parameter property="roleId" resultMap="AdminUserResultMap"/>
+        <parameter property="password" resultMap="AdminUserResultMap"/>
+        <parameter property="userName" resultMap="AdminUserResultMap"/>
+        <parameter property="bindIp" resultMap="AdminUserResultMap"/>
+        <parameter property="lastIp" resultMap="AdminUserResultMap"/>
+        <parameter property="lastLogin" resultMap="AdminUserResultMap"/>
+        <parameter property="salts" resultMap="AdminUserResultMap"/>
+        <parameter property="status" resultMap="AdminUserResultMap"/>
+        <parameter property="googleCode" resultMap="AdminUserResultMap"/>
+    </parameterMap>
+
+    <sql id="Base_Column_List">
+        MUID, ROLEID, USERNAME, PASSWORD, BINDIP, LASTIP, LASTLOGIN, SALTS, STATUS, GOOGLECODE, PARTNER_ID
+    </sql>
+
+    <select id="findAdminUserByName" resultMap="AdminUserResultMap" parameterType="string">
+        select <include refid="Base_Column_List"/>
+        from sys_admin_user
+        where USERNAME = #{userName}
+    </select>
+
+    <!-- 根据  管理员姓名 获取管理员信息 -->
+    <select id="getAdminUserInfo" parameterType="java.lang.String" resultMap="AdminUserResultMap">
+        select <include refid="Base_Column_List"/>
+        from sys_admin_user
+        where USERNAME = #{userName} limit 1
+    </select>
+
+    <!--  根据  管理员编号muId 获取管理员信息 -->
+    <select id="getAdminUserInfoByMuId" parameterType="java.lang.Integer" resultMap="AdminUserResultMap">
+        select <include refid="Base_Column_List"/>
+        from sys_admin_user
+        where MUID  = #{muId}
+    </select>
+
+    <!-- 更新用户登录信息 -->
+    <update id="updateAdminUser" parameterType="com.xmopay.admincp.dto.AdminUserDto">
+        update sys_admin_user
+        SET LASTLOGIN = #{lastLogin}
+        <if test="roleId != null ">,     ROLEID   = #{roleId}   </if>
+        <if test="userName != null and userName != ''">,   USERNAME = #{userName} </if>
+        <if test="status != null or status == 0">,         STATUS   = #{status}   </if>
+        <if test="password != null and password != ''">,   PASSWORD = #{password} </if>
+        <if test="lastIp != null and lastIp != ''">,       LASTIP   = #{lastIp}   </if>
+        <if test="bindIp != null and bindIp != ''">,       BINDIP   = #{bindIp}   </if>
+        <if test="googleCode != null and googleCode != ''">, GOOGLECODE   = #{googleCode}   </if>
+        WHERE MUID = #{muId}
+    </update>
+
+    <!-- 添加用户 -->
+    <insert id="addAdminUser"  parameterType="com.xmopay.admincp.dto.AdminUserDto" >
+        insert into sys_admin_user
+        (ROLEID,USERNAME,PASSWORD,SALTS,STATUS,LASTLOGIN, GOOGLECODE)
+        values
+        (#{roleId},#{userName},#{password},#{salts},#{status},#{lastLogin}, #{googleCode})
+    </insert>
+
+    <update id="updateGoogleCode" parameterType="com.xmopay.admincp.dto.AdminUserDto">
+        UPDATE sys_admin_user SET GOOGLECODE = #{googleCode} WHERE USERNAME=#{userName}
+    </update>
+
+    <!-- 查询用户列表  : 一对一关联查询 -->
+    <select id="getAdminUserList" parameterType="com.xmopay.admincp.dto.AdminUserDto" resultMap="AdminUserResultMap">
+        select u.*, r.*
+        from sys_admin_user u, sys_admin_role r
+        where u.ROLEID = r.RID
+        <if test="userName != null and userName != ''"> and locate(#{userName}, u.USERNAME) > 0  </if>
+        <if test="muId != null ">     and u.MUID     = #{muId}     </if>
+        ORDER BY u.LASTLOGIN DESC
+    </select>
+
+
+</mapper>

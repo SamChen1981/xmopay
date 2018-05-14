@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.funds.dao.TradeOrderDao">
+
+    <resultMap id="BaseResultMap" type="TradeOrderDto">
+        <id column="TOID" jdbcType="INTEGER" property="toId" />
+        <result column="ORDER_SN" jdbcType="VARCHAR" property="orderSn" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="TRAN_TYPE" jdbcType="INTEGER" property="tranType" />
+        <result column="SIGN_TYPE" jdbcType="VARCHAR" property="signType" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="PARTNER_NAME" jdbcType="VARCHAR" property="partnerName" />
+        <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+        <result column="CHANNEL_CODE" jdbcType="VARCHAR" property="channelCode" />
+        <result column="ORDER_AMOUNT" jdbcType="VARCHAR" property="orderAmount" />
+        <result column="ORDER_TIME" jdbcType="VARCHAR" property="orderTime" />
+        <result column="TRADE_TIME" jdbcType="VARCHAR" property="tradeTime" />
+        <result column="OUT_TRADE_NO" jdbcType="VARCHAR" property="outTradeNo" />
+        <result column="PAY_TYPE" jdbcType="VARCHAR" property="payType" />
+        <result column="NOTIFY_URL" jdbcType="VARCHAR" property="notifyUrl" />
+        <result column="EXTEND_PARAM" jdbcType="VARCHAR" property="extendParam" />
+        <result column="ORDER_STATUS" jdbcType="INTEGER" property="orderStatus" />
+        <result column="TRADE_IP" jdbcType="VARCHAR" property="tradeIp" />
+        <result column="TRADE_HASH" jdbcType="VARCHAR" property="tradeHash" />
+    </resultMap>
+
+    <select id="getTradeOrderByOrderSnToLock" parameterType="TradeOrderDto" resultMap="BaseResultMap">
+        select
+        <include refid="base_column_list" />
+        from wp_trade_order
+        where ORDER_STATUS = #{orderStatus}
+        and ORDER_SN = #{orderSn}
+        and PARTNER_ID = #{partnerId}
+        for update
+    </select>
+    
+    <update id="updateTradeOrderStatus" parameterType="TradeOrderDto">
+        update wp_trade_order
+        set BILLING_SN = #{billingSn},
+        <if test="finishTime != null and finishTime != ''">
+            FINISH_TIME = #{finishTime},
+        </if>
+        ORDER_STATUS = #{orderStatus}
+        where ORDER_SN = #{orderSn}
+    </update>
+
+    <sql id="base_column_list">
+        ORDER_SN,
+        TRAN_TYPE,
+        SIGN_TYPE,
+        PARTNER_ID,
+        PARTNER_NAME,
+        BANK_CODE,
+        CHANNEL_CODE,
+        ORDER_AMOUNT,
+        ORDER_TIME,
+        TRADE_TIME,
+        OUT_TRADE_NO,
+        PAY_TYPE,
+        NOTIFY_URL,
+        EXTEND_PARAM,
+        ORDER_STATUS,
+        TRADE_IP,
+        TRADE_HASH
+    </sql>
+</mapper>

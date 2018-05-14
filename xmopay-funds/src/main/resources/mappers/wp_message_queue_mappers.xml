@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.funds.dao.MessageQueueDao">
+
+    <delete id="deleteMessageQueueById" parameterType="int">
+        delete from wp_message_queue where MQID = #{mqId}
+    </delete>
+
+    <sql id="base_column_list">
+    </sql>
+</mapper>

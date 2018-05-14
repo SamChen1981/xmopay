@@ -1,0 +1,69 @@
+package com.xmopay.common.enums;
+
+/**
+ * Created by mimi on 6/05/2018
+ */
+public enum ApiResultEnum {
+
+    /** 未知定义 **/
+    UNKNOWN_ERROR("UNKNOW_ERROR", "未知错误"),
+    UNKNOWN_EXCEPTION_ERROR("UNKNOW_EXCEPTION_ERROR", "未知异常错误"),
+    UNKNOWN_GATEWAY_INTERFACE("UNKNOWN_GATEWAY_INTERFACE", "未知的网关接口地址"),
+    UNKNOWN_GATEWAY_SERVICE_NAME("UNKNOWN_GATEWAY_SERVICE_NAME", "未知的网关接口服务名"),
+
+    /** 业务定义 **/
+    PARTNER_IS_NOT_EXISTS("PARTNER_IS_NOT_EXISTS", "商户账号不存在或未开通，请联系业务人员"),
+    PARTNER_HAS_BEEN_BLOCKED("PARTNER_HAS_BEEN_BLOCKED", "商户账号被冻结，请联系业务人员"),
+    PARTNER_NOT_HAVE_PRODUCT("PARTNER_NOT_HAVE_PRODUCT", "商户产品权限未开通或被关闭，请联系业务人员"),
+    PARTNER_NOT_HAVE_PRODUCT_AUTH("PARTNER_NOT_HAVE_PRODUCT_AUTH", "产品权限未开启或被关闭，请联系业务人员"),
+    PARTNER_TRADE_QUOTA_HAS_LIMIT("PARTNER_TRADE_QUOTA_HAS_LIMIT", "商户日交易总额超限，请联系业务人员"),
+    PARTNER_NOT_HAVE_API_PRIVILEGE("PARTNER_NOT_HAVE_API_PRIVILEGE", "商户API调用权限未开启或被关闭，请联系业务人员"),
+    PARTNER_ACCOUNT_BALANCE_PRIVILEGE("PARTNER_ACCOUNT_BALANCE_PRIVILEGE", "商户账户余额不足"),
+    PARTNER_ACCOUNT_BALANCE_NOT_ENOUGH_FEE("PARTNER_ACCOUNT_BALANCE_NOT_ENOUGH_FEE", "商户账户余额不足，无法进行手续费预扣"),
+
+    /** 渠道定义 **/
+    GATEWAY_CHANNEL_RESPONSE_FAILURE("GATEWAY_CHANNEL_RESPONSE_FAILURE", "网关渠道请求响应失败"),
+    GATEWAY_CHANNEL_RESPONSE_SUCCESS("GATEWAY_CHANNEL_RESPONSE_SUCCESS", "网关渠道请求响应成功"),
+    GATEWAY_CHANNEL_RESPONSE_EXCEPTION("GATEWAY_CHANNEL_RESPONSE_EXCEPTION", "网关渠道请求响应异常"),
+    GATEWAY_CHANNEL_LIST_NOT_FOUND("GATEWAY_CHANNEL_LIST_NOT_FOUND", "网关渠道列表信息不存在"),
+    GATEWAY_CHANNEL_ROUTE_RULE_NOT_FOUND("GATEWAY_CHANNEL_ROUTE_RULE_NOT_FOUND", "网关渠道路由规则未找到"),
+    GATEWAY_CHANNEL_NOT_FOUND("GATEWAY_CHANNEL_NOT_FOUND", "未找到可用网关渠道"),
+
+    TRADE_ORDER_RESPONSE_ERROR("TRADE_ORDER_RESPONSE_ERROR", "订单请求响应失败，请联系业务人员协助检查"),
+
+    /** 参数定义 **/
+    ILLEGAL_SIGN_VALUE("ILLEGAL_SIGN_VALUE", "签名值不匹配"),
+    ILLEGAL_IP_ACCESS_FORBIDDEN("ILLEGAL_IP_ACCESS_FORBIDDEN", "请求访问受限，IP未在白名单内"),
+    ILLEGAL_ORDER_PARAMS_NULL("ILLEGAL_ORDER_PARAMS_NULL", "订单参数不能为空，请参阅接口文档"),
+    ILLEGAL_OUT_TRADE_NO_IS_EXISTS("OUT_TRADE_NO_IS_EXISTS", "商户订单号已存在，请勿重复提交"),
+    ILLEGAL_OUT_TRADE_NOT_EXISTS("ILLEGAL_OUT_TRADE_NOT_EXISTS", "商户订单号不存在"),
+    ILLEGAL_ORDER_PARAMS_LENGTH("ILLEGAL_ORDER_FIELD_LENGTH", "订单参数长度不合法，请参阅接口文档"),
+    ILLEGAL_ORDER_PARAMS_FORMAT("ILLEGAL_ORDER_PARAMS_FORMAT", "订单参数格式不合法，请参阅接口文档"),
+    ILLEGAL_BIZ_CONTENT_ERROR("ILLEGAL_BIZ_CONTENT_ERROR", "代付主体参数错误"),
+    ILLEGAL_CARD_BIN_ERROR("ILLEGAL_CARD_BIN_ERROR", "所提交的银行卡BIILLEGAL_ORDER_PARAMS_NULLN异常"),
+    INVALID_TRADE_AMOUNT_LIMIT("INVALID_TRADE_AMOUNT_LIMIT", "单笔交易金额超限"),
+    INVALID_TRANSFER_AMOUNT_LIMIT("INVALID_TRANSFER_AMOUNT_LIMIT", "单笔提现金额超限"),
+    INVALID_IP_ACCESS_FORBIDDEN("INVALID_IP_ACCESS_FORBIDDEN", "用户IP访问受限制，未在白名单内"),
+    INVALID_BANK_CODE_UNAVAILABLE("INVALID_BANK_CODE_UNAVAILABLE", "渠道银行维护中, 暂停出款服务, 恢复时间等待官方通知"),
+
+    /** 成功定义 **/
+    RESPONSE_FAILURE("RESPONSE_FAILURE", "请求响应失败"),
+    RESPONSE_SUCCESS("RESPONSE_SUCCESS", "请求响应成功");
+
+    private String respCode;
+    private String respMsg;
+
+    ApiResultEnum(String respCode, String respMsg) {
+        this.respCode = respCode;
+        this.respMsg = respMsg;
+    }
+
+    public String getRespCode() {
+        return respCode;
+    }
+
+    public String getRespMsg() {
+        return respMsg;
+    }
+
+}

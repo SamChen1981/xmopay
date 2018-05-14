@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.funds.dao.BillingsDao">
+
+    <insert id="insertBillings" parameterType="BillingsDto">
+        insert into wp_billings(ORDER_SN, BILLING_SN, BILL_TYPE, PARTNER_ID, PARTNER_NAME, PAY_TYPE, BANK_CODE, TRADE_AMOUNT, TRADE_FEE, PAYMENT, ACCOUNT_AMOUNT, REMARK, TRADE_TIME, PAY_STATUS)
+        values (#{orderSn}, #{billingSn}, #{billType}, #{partnerId}, #{partnerName}, #{payType}, #{bankCode}, #{tradeAmount}, #{tradeFee}, #{payment}, #{accountAmount}, #{remark}, #{tradeTime}, #{payStatus})
+    </insert>
+
+    <sql id="base_column_list">
+    </sql>
+</mapper>

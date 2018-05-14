@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.MessageQueueDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.MessageQueueDto">
+        <id column="MQID" jdbcType="INTEGER" property="mqid" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="ORDER_SN" jdbcType="VARCHAR" property="orderSn" />
+        <result column="MESSAGE_TOPIC" jdbcType="VARCHAR" property="messageTopic" />
+        <result column="MESSAGE_HOST" jdbcType="VARCHAR" property="messageHost" />
+
+        <result column="NOTIFY_COUNT" jdbcType="INTEGER" property="notifyCount" />
+        <result column="THREAD_STATUS" jdbcType="INTEGER" property="threadStatus" />
+        <result column="CONSUMER_STATUS" jdbcType="INTEGER" property="consumerStatus" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xmopay.admincp.dto.MessageQueueDto">
+        <result column="MESSAGE_BODY" jdbcType="LONGVARCHAR" property="messageBody" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    MQID, PARTNER_ID, ORDER_SN, MESSAGE_TOPIC,MESSAGE_HOST, NOTIFY_COUNT, THREAD_STATUS, CONSUMER_STATUS,
+    DATELINE
+  </sql>
+    <sql id="Blob_Column_List">
+    MESSAGE_BODY
+  </sql>
+
+    <insert id="insertMessageQueue" parameterType="com.xmopay.admincp.dto.MessageQueueDto">
+        insert into wp_message_queue
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="partnerId != null and partnerId != ''">,PARTNER_ID</if>
+            <if test="orderSn != null and orderSn != ''">,ORDER_SN</if>
+            <if test="messageTopic != null and messageTopic != ''">,MESSAGE_TOPIC</if>
+            <if test="messageBody != null and messageBody != ''">,MESSAGE_BODY</if>
+            <if test="messageHost != null and messageHost != '' ">,MESSAGE_HOST</if>
+            <if test="dateline != null ">,DATELINE</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" prefixOverrides=",">
+            <if test="partnerId != null and partnerId != ''">,#{partnerId}</if>
+            <if test="orderSn != null and orderSn != ''">,#{orderSn}</if>
+            <if test="messageTopic != null and messageTopic != ''">,#{messageTopic}</if>
+            <if test="messageBody != null and messageBody != ''">,#{messageBody}</if>
+            <if test="messageHost != null and messageHost != ''">,#{messageHost}</if>
+            <if test="dateline != null ">,#{dateline}</if>
+        </trim>
+    </insert>
+
+    <select id="getMessageQueueList" parameterType="com.xmopay.admincp.dto.MessageQueueDto" resultMap="ResultMapWithBLOBs">
+        select  <include refid="Base_Column_List" /> , <include refid="Blob_Column_List" />
+        from wp_message_queue
+        <where>
+            <if test="orderSn != null and orderSn != ''">    and ORDER_SN        = #{orderSn}    </if>
+            <if test="startTime != null and startTime != ''">and DATELINE        &gt;= #{startTime} </if>
+            <if test="endTime != null and endTime != ''">    and DATELINE        &lt;= #{endTime}   </if>
+            <if test="threadStatus != null or threadStatus == 0">     and THREAD_STATUS   = #{threadStatus}  </if>
+            <if test="consumerStatus != null or consumerStatus == 0"> and CONSUMER_STATUS = #{consumerStatus}</if>
+        </where>
+        ORDER BY DATELINE DESC
+    </select>
+
+    <delete id="deleteMessageQueue" parameterType="com.xmopay.admincp.dto.MessageQueueDto">
+        delete from wp_message_queue
+        where MQID = #{mqid}
+    </delete>
+
+    <update id="updateQueue" parameterType="com.xmopay.admincp.dto.MessageQueueDto">
+        update wp_message_queue set THREAD_STATUS = 0, CONSUMER_STATUS = 0
+        where MQID = #{mqid}
+    </update>
+
+</mapper>

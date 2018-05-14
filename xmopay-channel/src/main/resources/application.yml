@@ -1,0 +1,109 @@
+spring:
+  application:
+    name: xmopay-channel
+server:
+  port: 9992
+
+funds:
+  execute:
+    enable: true
+    stop: false
+    messageType: 0
+    transferToHost:
+logs:
+  level: info
+  path: ./logs
+
+datasource:
+  #是否启用数据库模式
+  enable: true
+  # 使用druid数据源
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  type: com.alibaba.druid.pool.DruidDataSource
+  url: jdbc:mysql://paycloud.mysql.rds.aliyuncs.com:3308/xmopayv20?autoReconnect=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+  username: xmopay
+  password: qj3U8wd3cJ6TDDbOXQxLbIQon7Wy0MQ1SSWCBBI0TXScC1bwT/eWysbh4fZhmlAk8WRBZ9jXTZKVdR70O+oniA==
+  # 下面为连接池的补充设置，应用到上面所有数据源中
+  # 初始化大小，最小，最大
+  initialSize: 1
+  minIdle: 3
+  maxActive: 20
+  # 配置获取连接等待超时的时间
+  maxWait: 60000
+  # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+  timeBetweenEvictionRunsMillis: 60000
+  # 配置一个连接在池中最小生存的时间，单位是毫秒
+  minEvictableIdleTimeMillis: 30000
+  validationQuery: select 'x'
+  testWhileIdle: true
+  testOnBorrow: false
+  testOnReturn: false
+  # 打开PSCache，并且指定每个连接上PSCache的大小
+  poolPreparedStatements: true
+  maxPoolPreparedStatementPerConnectionSize: 20
+  # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+  filters: config,stat,wall,slf4j
+  #打开慢SQL记录
+  logSlowSql: true
+  # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALihc+CoZDAzfMH/IaZ6GCN74Lproainl8ZGeZyAW6Q+Phpr9fuIJaYcdAe1abIu1zF5RNxePcbXzbk2xSf0OeUCAwEAAQ==
+  # 合并多个DruidDataSource的监控数据
+  #useGlobalDataSourceStat: true
+
+# redis config
+redis:
+  enable: false
+  #数据库索引
+  database: 0
+  host: 127.0.0.1
+  port: 6379
+  password:
+  jedis:
+    pool:
+    #最大连接数
+    max-active: 8
+    #最大阻塞等待时间(负数表示没限制)
+    max-wait: -1
+    #最大空闲
+    max-idle: 8
+    #最小空闲
+    min-idle: 0
+    #连接超时时间
+    timeout: 10000
+
+alipay:
+  sandbox:
+    serverUrl: https://openapi.alipaydev.com/gateway.do
+    appId: 2016091400512702
+    appPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDDcMzovuB3G+UyQR8sX0EDKUsAhtCWQ6hjTrxFVVSVvEW3dIVpZ80bl6CzPFhKihP+7mEoqRsGgWSkXtejmwFUShu04CV9mjliaXCpvIW3X5uKeL3qJoV2ZAaRuUT5MVa3COZLZbxDTr15XGQ8RmIJnaAKS73KJaAOuz2agT+OLDi+ia/vdbLVo+VV2bqKCoU1igOxOswgC5SIwBrnU3S9kdzMBKNP4SPP3vb7OYnQAAnN+Jlc9S0tGpfDHktA4MfpnsQ6yAu/cXXBJIMnJLlORaFoRuyMDdwwnEm5vsx9eo8YC5cR6Riqbh8ZL+xSpgar5/JZZ+oZ/gpk3+/6qhF5AgMBAAECggEBAMMxb5WsvaZ4F8q/O5EneVjc7umRu9W3sP+t7V8ZwCbkKIT3PR9u6mz6XSdlx5B6o0njbuobKsCujoOTra7a6tLySQW3L/poA5QEVt9PSAVC2afMu3CWFImPkPgNn5N58W9Q1iDLdOGMTLRe0EVaziNoaCSgTOcN+PN9kiMznvQv+id7i+x6KupRbyFJr8msy69aUzt9Z975pWhFCh4DBz29hlVKLzlA6FvN9CzZXpUjyMrqabQK9N9h7CgtY8kus3Mq0f+abnAuGyxRbuHFWax+sbkJJTLEhu0IAAOT9Ll4S3op+ZOqNZxw+rvT39cR/N9d51Yg/C6K/WDqnapIGGECgYEA8lswYTcvCf65Vpjz7/BJOo6CEZWo95S+m8JAckPc8K6SfgKI0LD9CLS+8SUwE+ePlUagg+c/ScFGEWiHgXfwVusi+8twlV+vcZtGjHGsrEHpcsJ028F1qR0YZK3MZSeQUTmKMsO2qE8J+6SB3QouFXJyIECP/IARZWFHumDfVa0CgYEAznF4IS+qz4bSjZnPvHXdNjxXwxaxoV6HHQQw+Qwq6JZt/CUSpGqnPf+W4+5fthp+Hvk9XEfwkU0v6hZvaTVutM5WFzIlbk6P9sMnvSPTKsoKkkoBydf0wQdtGLLp6lBxeDy+IASvGwNnXVBn1R7kzCY64oQR8+BoDJ7f8//hrH0CgYEAxQxZcKFykHjX7k3cAFjo4UBfBrcdM3dv5qpwxbbhm5sEpome/bb5dKuol955kaVze5Z6CeTp8yi+tIa9rgl7kuAJiJonRnwO5JqwKJ6AG2pXyaPLaaWI6eArJiidCB273B6he5bfG0dwQXbG05ZkU7HCkvCLYWwrOLd4n1QGId0CgYBKhsYSXO3yCz75pXxMEdSxHqmkIQ4xLjnirL+tOMpIuv2rmAqZ1nLXu+xSDpz41amQLvQK22GqYs4YWM8RkRuNJCwKJa1DnBL2x08SRduWx+d3FkZ9Anw2LyMgVn6Be1brTCpqzqYUP29STZOeaY+5b1e0rG76tpl5bOV2ZXqn1QKBgQCwf/Wsx07/q59AZXkfCtyaPb1+OJy2B3W4JgkheyqBbClkjESr8FYb5Wiy4B1Pi1QKZ5wmyHGqiiZpWzVrd/26qdtCQ+jcTH+3PrlvCyOGFrLtixVWjGWggWcyyh+s6s8wdzVGnH0LAHJBaCWy9Y9/K0juwU96a0CsY6pQ+ietYw==
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAneZ2zEldJioOAqWmf5jSfmv1QKODzw1LLPM1Z5pVmMz58M7XgxrJ0gl+Cl3FI4Sqzt9y+7EH8j1ZBZUO5a21KyHXB2ADU2o8LDoFCzxXYuAr2X2bxU36jQZfAFlSy5VLNk16trg94UDPOOFljZjdJ6TtfAKsSo0ZKCp8JE2dYJU8Aj0A9SbF+h1lLYDADkfyIIk6IKLcsnCrzeY1nKk+Gecfme0qTE4vJOb8ZYYAGS0+oN3lZHpvigP230Vljygp3bBz96CLn2UcSC0TgRhAEmJG9juCnFl0ODem/Img5clyDBfgMcwSKh8GId++12ftMpgLjbrbfehU1Fzrdxew2QIDAQAB
+  test:
+    serverUrl: https://openapi.alipaydev.com/gateway.do
+    appId: 2016091400512702
+    appPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDDcMzovuB3G+UyQR8sX0EDKUsAhtCWQ6hjTrxFVVSVvEW3dIVpZ80bl6CzPFhKihP+7mEoqRsGgWSkXtejmwFUShu04CV9mjliaXCpvIW3X5uKeL3qJoV2ZAaRuUT5MVa3COZLZbxDTr15XGQ8RmIJnaAKS73KJaAOuz2agT+OLDi+ia/vdbLVo+VV2bqKCoU1igOxOswgC5SIwBrnU3S9kdzMBKNP4SPP3vb7OYnQAAnN+Jlc9S0tGpfDHktA4MfpnsQ6yAu/cXXBJIMnJLlORaFoRuyMDdwwnEm5vsx9eo8YC5cR6Riqbh8ZL+xSpgar5/JZZ+oZ/gpk3+/6qhF5AgMBAAECggEBAMMxb5WsvaZ4F8q/O5EneVjc7umRu9W3sP+t7V8ZwCbkKIT3PR9u6mz6XSdlx5B6o0njbuobKsCujoOTra7a6tLySQW3L/poA5QEVt9PSAVC2afMu3CWFImPkPgNn5N58W9Q1iDLdOGMTLRe0EVaziNoaCSgTOcN+PN9kiMznvQv+id7i+x6KupRbyFJr8msy69aUzt9Z975pWhFCh4DBz29hlVKLzlA6FvN9CzZXpUjyMrqabQK9N9h7CgtY8kus3Mq0f+abnAuGyxRbuHFWax+sbkJJTLEhu0IAAOT9Ll4S3op+ZOqNZxw+rvT39cR/N9d51Yg/C6K/WDqnapIGGECgYEA8lswYTcvCf65Vpjz7/BJOo6CEZWo95S+m8JAckPc8K6SfgKI0LD9CLS+8SUwE+ePlUagg+c/ScFGEWiHgXfwVusi+8twlV+vcZtGjHGsrEHpcsJ028F1qR0YZK3MZSeQUTmKMsO2qE8J+6SB3QouFXJyIECP/IARZWFHumDfVa0CgYEAznF4IS+qz4bSjZnPvHXdNjxXwxaxoV6HHQQw+Qwq6JZt/CUSpGqnPf+W4+5fthp+Hvk9XEfwkU0v6hZvaTVutM5WFzIlbk6P9sMnvSPTKsoKkkoBydf0wQdtGLLp6lBxeDy+IASvGwNnXVBn1R7kzCY64oQR8+BoDJ7f8//hrH0CgYEAxQxZcKFykHjX7k3cAFjo4UBfBrcdM3dv5qpwxbbhm5sEpome/bb5dKuol955kaVze5Z6CeTp8yi+tIa9rgl7kuAJiJonRnwO5JqwKJ6AG2pXyaPLaaWI6eArJiidCB273B6he5bfG0dwQXbG05ZkU7HCkvCLYWwrOLd4n1QGId0CgYBKhsYSXO3yCz75pXxMEdSxHqmkIQ4xLjnirL+tOMpIuv2rmAqZ1nLXu+xSDpz41amQLvQK22GqYs4YWM8RkRuNJCwKJa1DnBL2x08SRduWx+d3FkZ9Anw2LyMgVn6Be1brTCpqzqYUP29STZOeaY+5b1e0rG76tpl5bOV2ZXqn1QKBgQCwf/Wsx07/q59AZXkfCtyaPb1+OJy2B3W4JgkheyqBbClkjESr8FYb5Wiy4B1Pi1QKZ5wmyHGqiiZpWzVrd/26qdtCQ+jcTH+3PrlvCyOGFrLtixVWjGWggWcyyh+s6s8wdzVGnH0LAHJBaCWy9Y9/K0juwU96a0CsY6pQ+ietYw==
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAneZ2zEldJioOAqWmf5jSfmv1QKODzw1LLPM1Z5pVmMz58M7XgxrJ0gl+Cl3FI4Sqzt9y+7EH8j1ZBZUO5a21KyHXB2ADU2o8LDoFCzxXYuAr2X2bxU36jQZfAFlSy5VLNk16trg94UDPOOFljZjdJ6TtfAKsSo0ZKCp8JE2dYJU8Aj0A9SbF+h1lLYDADkfyIIk6IKLcsnCrzeY1nKk+Gecfme0qTE4vJOb8ZYYAGS0+oN3lZHpvigP230Vljygp3bBz96CLn2UcSC0TgRhAEmJG9juCnFl0ODem/Img5clyDBfgMcwSKh8GId++12ftMpgLjbrbfehU1Fzrdxew2QIDAQAB
+  pro:
+    serverUrl: https://openapi.alipaydev.com/gateway.do
+    appId: 2016091400512702
+    appPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDDcMzovuB3G+UyQR8sX0EDKUsAhtCWQ6hjTrxFVVSVvEW3dIVpZ80bl6CzPFhKihP+7mEoqRsGgWSkXtejmwFUShu04CV9mjliaXCpvIW3X5uKeL3qJoV2ZAaRuUT5MVa3COZLZbxDTr15XGQ8RmIJnaAKS73KJaAOuz2agT+OLDi+ia/vdbLVo+VV2bqKCoU1igOxOswgC5SIwBrnU3S9kdzMBKNP4SPP3vb7OYnQAAnN+Jlc9S0tGpfDHktA4MfpnsQ6yAu/cXXBJIMnJLlORaFoRuyMDdwwnEm5vsx9eo8YC5cR6Riqbh8ZL+xSpgar5/JZZ+oZ/gpk3+/6qhF5AgMBAAECggEBAMMxb5WsvaZ4F8q/O5EneVjc7umRu9W3sP+t7V8ZwCbkKIT3PR9u6mz6XSdlx5B6o0njbuobKsCujoOTra7a6tLySQW3L/poA5QEVt9PSAVC2afMu3CWFImPkPgNn5N58W9Q1iDLdOGMTLRe0EVaziNoaCSgTOcN+PN9kiMznvQv+id7i+x6KupRbyFJr8msy69aUzt9Z975pWhFCh4DBz29hlVKLzlA6FvN9CzZXpUjyMrqabQK9N9h7CgtY8kus3Mq0f+abnAuGyxRbuHFWax+sbkJJTLEhu0IAAOT9Ll4S3op+ZOqNZxw+rvT39cR/N9d51Yg/C6K/WDqnapIGGECgYEA8lswYTcvCf65Vpjz7/BJOo6CEZWo95S+m8JAckPc8K6SfgKI0LD9CLS+8SUwE+ePlUagg+c/ScFGEWiHgXfwVusi+8twlV+vcZtGjHGsrEHpcsJ028F1qR0YZK3MZSeQUTmKMsO2qE8J+6SB3QouFXJyIECP/IARZWFHumDfVa0CgYEAznF4IS+qz4bSjZnPvHXdNjxXwxaxoV6HHQQw+Qwq6JZt/CUSpGqnPf+W4+5fthp+Hvk9XEfwkU0v6hZvaTVutM5WFzIlbk6P9sMnvSPTKsoKkkoBydf0wQdtGLLp6lBxeDy+IASvGwNnXVBn1R7kzCY64oQR8+BoDJ7f8//hrH0CgYEAxQxZcKFykHjX7k3cAFjo4UBfBrcdM3dv5qpwxbbhm5sEpome/bb5dKuol955kaVze5Z6CeTp8yi+tIa9rgl7kuAJiJonRnwO5JqwKJ6AG2pXyaPLaaWI6eArJiidCB273B6he5bfG0dwQXbG05ZkU7HCkvCLYWwrOLd4n1QGId0CgYBKhsYSXO3yCz75pXxMEdSxHqmkIQ4xLjnirL+tOMpIuv2rmAqZ1nLXu+xSDpz41amQLvQK22GqYs4YWM8RkRuNJCwKJa1DnBL2x08SRduWx+d3FkZ9Anw2LyMgVn6Be1brTCpqzqYUP29STZOeaY+5b1e0rG76tpl5bOV2ZXqn1QKBgQCwf/Wsx07/q59AZXkfCtyaPb1+OJy2B3W4JgkheyqBbClkjESr8FYb5Wiy4B1Pi1QKZ5wmyHGqiiZpWzVrd/26qdtCQ+jcTH+3PrlvCyOGFrLtixVWjGWggWcyyh+s6s8wdzVGnH0LAHJBaCWy9Y9/K0juwU96a0CsY6pQ+ietYw==
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAneZ2zEldJioOAqWmf5jSfmv1QKODzw1LLPM1Z5pVmMz58M7XgxrJ0gl+Cl3FI4Sqzt9y+7EH8j1ZBZUO5a21KyHXB2ADU2o8LDoFCzxXYuAr2X2bxU36jQZfAFlSy5VLNk16trg94UDPOOFljZjdJ6TtfAKsSo0ZKCp8JE2dYJU8Aj0A9SbF+h1lLYDADkfyIIk6IKLcsnCrzeY1nKk+Gecfme0qTE4vJOb8ZYYAGS0+oN3lZHpvigP230Vljygp3bBz96CLn2UcSC0TgRhAEmJG9juCnFl0ODem/Img5clyDBfgMcwSKh8GId++12ftMpgLjbrbfehU1Fzrdxew2QIDAQAB
+
+wxpay:
+  sandbox:
+    appId: wxab8acb865bb1637e
+    mchId: 11473623
+    key: 2ab9071b06b9f739b950ddb41db2690d
+eureka:
+  client:
+    service-url:
+      defaultzone: http://localhost:8761/eureka/,http://localhost:8762/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname:
+  instance:
+    prefer-ip-address: true
+
+#      defaultZone: http://xmopay:xmopay9441@localhost:9441/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true

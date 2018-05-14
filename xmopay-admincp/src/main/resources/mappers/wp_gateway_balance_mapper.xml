@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.GatewayBalanceDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.GatewayBalanceDto">
+        <id column="GAID" jdbcType="INTEGER" property="gaid" />
+        <result column="GATEWAY_TYPE" jdbcType="INTEGER" property="gatewayType" />
+        <result column="GATEWAY_CODE" jdbcType="VARCHAR" property="gatewayCode" />
+        <result column="GATEWAY_NAME" jdbcType="VARCHAR" property="gatewayName" />
+        <result column="BALANCE" jdbcType="DECIMAL" property="balance" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+        <result column="MER_VIRAL_ACCT" jdbcType="VARCHAR" property="merViralAcct" />
+        <result column="BATCH_ID" jdbcType="VARCHAR" property="batchId" />
+        <result column="LAST_TRADE_TIME" jdbcType="TIMESTAMP" property="lastTradeTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    GAID, GATEWAY_TYPE, GATEWAY_CODE, GATEWAY_NAME, BALANCE, DATELINE, MER_VIRAL_ACCT,
+    BATCH_ID, LAST_TRADE_TIME
+  </sql>
+    <!--渠道余额列表-->
+    <select id="getGatewayBalanceList" parameterType="com.xmopay.admincp.dto.GatewayBalanceDto" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from wp_gateway_balance
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="gatewayCode != null and gatewayCode != ''"> and GATEWAY_CODE like '%${gatewayCode}%'</if>
+            <if test="gatewayName != null and gatewayName != ''"> and GATEWAY_NAME like '%${gatewayName}%'</if>
+            <if test="batchId != null and batchId != ''"> and BATCH_ID = #{batchId}</if>
+            <if test="startTime != null and startTime != ''"> and DATELINE &gt;= #{startTime}</if>
+            <if test="endTime != null and endTime != ''"> and DATELINE &lt;= #{endTime}</if>
+        </trim>
+        order by BATCH_ID DESC, BALANCE ASC
+    </select>
+    <!--渠道余额归总-->
+    <select id="getSumBalance" parameterType="com.xmopay.admincp.dto.GatewayBalanceDto" resultType="hashmap">
+        select sum(BALANCE) as BALANCE_TOTAL from wp_gateway_balance
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="gatewayCode != null and gatewayCode != ''"> and GATEWAY_CODE like '%${gatewayCode}%'</if>
+            <if test="gatewayName != null and gatewayName != ''"> and GATEWAY_NAME like '%${gatewayName}%'</if>
+            <if test="batchId != null and batchId != ''"> and BATCH_ID = #{batchId}</if>
+            <if test="startTime != null and startTime != ''"> and DATELINE &gt;= #{startTime}</if>
+            <if test="endTime != null and endTime != ''"> and DATELINE &lt;= #{endTime}</if>
+        </trim>
+    </select>
+
+</mapper>

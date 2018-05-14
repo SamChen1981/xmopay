@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.GatewayChannelDao">
+    <resultMap id="gatewayChannelResultMap" type="com.xmopay.admincp.dto.GatewayChannelDto">
+        <id column="CHANNEL_ID" jdbcType="INTEGER" property="channelId" />
+        <result column="AGENCY_ID" jdbcType="INTEGER" property="agencyId" />
+        <result column="CHANNEL_TYPE" jdbcType="INTEGER" property="channelType" />
+        <result column="CHANNEL_CODE" jdbcType="VARCHAR" property="channelCode" />
+        <result column="CHANNEL_NAME" jdbcType="VARCHAR" property="channelName" />
+        <result column="CHANNEL_KEY" jdbcType="VARCHAR" property="channelKey" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+        <result column="STATUS" jdbcType="INTEGER" property="status" />
+        <result column="CHANNEL_SECRET" jdbcType="LONGVARCHAR" property="channelSecret" />
+        <result column="CHANNEL_PARAMS" jdbcType="LONGVARCHAR" property="channelParams" />
+        <result column="CHANNEL_BALANCE" jdbcType="VARCHAR" property="channelBalance" />
+        <association property="gatewayAgencyDto" javaType="com.xmopay.admincp.dto.GatewayAgencyDto">
+            <id column="GAID" jdbcType="INTEGER" property="gaid" />
+            <result column="AGENCY_CODE" jdbcType="VARCHAR" property="agencyCode" />
+            <result column="AGENCY_NAME" jdbcType="VARCHAR" property="agencyName" />
+            <result column="AGENCY_STATUS" jdbcType="INTEGER" property="agencyStatus" />
+            <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+            <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+            <result column="AGENCY_PARAMS" jdbcType="LONGVARCHAR" property="agencyParams" />
+        </association>
+    </resultMap>
+
+    <sql id="gc_sql_base_fields">
+        gc.CHANNEL_ID,
+        gc.AGENCY_ID,
+        gc.CHANNEL_TYPE,
+        gc.CHANNEL_CODE,
+        gc.CHANNEL_NAME,
+        gc.CHANNEL_KEY,
+        gc.CHANNEL_SECRET,
+        gc.CHANNEL_BALANCE,
+        gc.CHANNEL_PARAMS,
+        gc.UPDATE_TIME,
+        gc.STATUS,
+        gc.DATELINE
+    </sql>
+
+    <sql id="ga_sql_base_fields">
+        ga.GAID,
+        ga.AGENCY_CODE,
+        ga.AGENCY_NAME,
+        ga.AGENCY_PARAMS,
+        ga.AGENCY_STATUS,
+        ga.UPDATE_TIME,
+        ga.DATELINE
+    </sql>
+
+    <!-- 网关支付渠道列表 -->
+    <select id="getGatewayChannelList" parameterType="com.xmopay.admincp.dto.GatewayChannelDto" resultMap="gatewayChannelResultMap">
+        SELECT
+        <include refid="gc_sql_base_fields"/>,
+        <include refid="ga_sql_base_fields"/>
+        FROM wp_gateway_channel gc, wp_gateway_agency ga
+        where gc.AGENCY_ID = ga.GAID
+        <if test="channelType != null and channelType != '' or channelType == 0"> and gc.CHANNEL_TYPE = #{channelType}</if>
+        <if test="channelCode != null and channelCode != ''">and gc.`CHANNEL_CODE` like '%${channelCode}%'</if>
+        <if test="channelName != null and channelName != ''">and gc.`CHANNEL_NAME` like '%${channelName}%'</if>
+        ORDER BY gc.UPDATE_TIME DESC
+    </select>
+
+    <select id="getGatewayChannelById" parameterType="com.xmopay.admincp.dto.GatewayChannelDto" resultMap="gatewayChannelResultMap">
+        SELECT
+        <include refid="gc_sql_base_fields"/>
+        FROM wp_gateway_channel gc WHERE gc.CHANNEL_ID = #{channelId}
+        limit 1
+    </select>
+
+    <insert id="insertGatewayChannel" parameterType="com.xmopay.admincp.dto.GatewayChannelDto">
+      INSERT INTO wp_gateway_channel
+        (AGENCY_ID, CHANNEL_TYPE, CHANNEL_CODE, CHANNEL_NAME, CHANNEL_KEY, CHANNEL_SECRET, CHANNEL_PARAMS, STATUS, UPDATE_TIME, DATELINE)
+        VALUES
+        (#{agencyId}, #{channelType}, #{channelCode}, #{channelName}, #{channelKey}, #{channelSecret}, #{channelParams}, #{status}, #{updateTime}, #{dateline})
+    </insert>
+
+    <!-- 修改网关渠道 -->
+    <update id="updateGatewayChannel" parameterType="com.xmopay.admincp.dto.GatewayChannelDto">
+        UPDATE wp_gateway_channel
+        <set>
+            <if test="agencyId != null">                                AGENCY_ID         = #{agencyId},       </if>
+            <if test="channelType != null">                             CHANNEL_TYPE      = #{channelType},    </if>
+            <if test="channelCode != null and channelCode != ''">       CHANNEL_CODE      = #{channelCode},    </if>
+            <if test="channelName != null and channelName != ''">       CHANNEL_NAME      = #{channelName},    </if>
+            <if test="channelKey != null and channelKey != ''">         CHANNEL_KEY       = #{channelKey},     </if>
+            <if test="channelSecret != null and channelSecret != ''">   CHANNEL_SECRET    = #{channelSecret},  </if>
+            <if test="channelParams != null and channelParams != ''">   CHANNEL_PARAMS    = #{channelParams},  </if>
+            <if test="status != null ">                                 STATUS            = #{status},         </if>
+            <if test="updateTime != null ">                             UPDATE_TIME       = #{updateTime}      </if>
+        </set>
+        WHERE CHANNEL_ID = #{channelId}
+    </update>
+
+    <delete id="deleteGatewayChannel" parameterType="java.lang.Integer">
+        delete from wp_gateway_channel where CHANNEL_ID = #{channelId} and STATUS = 0
+    </delete>
+
+    <select id="findGatewayChannelList" parameterType="com.xmopay.admincp.dto.GatewayChannelDto" resultMap="gatewayChannelResultMap">
+        SELECT
+        <include refid="gc_sql_base_fields"/>
+        FROM wp_gateway_channel gc
+        <trim prefix="where" prefixOverrides="AND | OR">
+            <if test="status != null and status != '' and status > 0 or status == 0">and gc.`STATUS` = #{status}</if>
+            <if test="status == -1 ">and gc.`STATUS` is NULL</if>
+            <if test="channelType != null and channelType != '' or channelType == 0"> and gc.CHANNEL_TYPE = #{channelType}</if>
+        </trim>
+    </select>
+
+</mapper>

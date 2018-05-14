@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.funds.dao.PartnerAccountDao">
+
+    <resultMap id="BaseResultMap" type="PartnerAccountDto">
+        <result column="BALANCE" jdbcType="VARCHAR" property="balance" />
+    </resultMap>
+
+    <select id="getPartnerAccountByPid" parameterType="String" resultMap="BaseResultMap">
+        select
+        <include refid="base_column_list" />
+        from wp_partners_account
+        where PARTNER_ID = #{partnerId}
+        limit 1
+    </select>
+
+
+    <select id="getPartnerAccountByPidLock" parameterType="String" resultMap="BaseResultMap">
+        select
+        <include refid="base_column_list" />
+        from wp_partners_account
+        where PARTNER_ID = #{partnerId} for update
+    </select>
+    
+    <update id="updatePartnerAccount" parameterType="PartnerAccountDto">
+        update wp_partners_account
+        set
+        BALANCE = BALANCE + #{balance},
+        LAST_TRADE = #{lastTrade}
+        where PARTNER_ID = #{partnerId}
+    </update>
+
+    <sql id="base_column_list">
+        PARTNER_ID, BALANCE, FREEZE_BALANCE, LAST_TRADE
+    </sql>
+</mapper>

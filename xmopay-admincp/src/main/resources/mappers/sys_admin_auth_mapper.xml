@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.AdminAuthDao">
+
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.AdminAuthDto">
+        <id column="ROLE_ID" jdbcType="INTEGER" property="roleId" />
+        <result column="MENU_ID" jdbcType="INTEGER" property="menuId" />
+        <association property="adminRole" resultMap="AdminRoleResultMap" />
+        <association property="adminMenu" resultMap="AdminMenuResultMap" />
+    </resultMap>
+
+    <resultMap id="AdminRoleResultMap" type="com.xmopay.admincp.dto.AdminRoleDto">
+        <result column="ROLENAME" property="roleName"/>
+    </resultMap>
+
+    <resultMap id="AdminMenuResultMap" type="com.xmopay.admincp.dto.AdminMenuDto">
+        <result column="MENU_NAME" property="menuName"/>
+    </resultMap>
+
+    <parameterMap id="BaseParameterMap" type="com.xmopay.admincp.dto.AdminAuthDto">
+        <parameter property="roleId" resultMap="BaseResultMap"/>
+        <parameter property="menuId" resultMap="BaseResultMap"/>
+    </parameterMap>
+
+    <sql id="Base_Column_List">
+        ROLE_ID, MENU_ID
+    </sql>
+
+    <!-- 添加权限表 -->
+    <insert id="insertAuth" parameterType="com.xmopay.admincp.dto.AdminAuthDto">
+        insert into sys_admin_auth (ROLE_ID, MENU_ID) values (#{roleId}, #{menuId})
+
+    </insert>
+
+    <!-- 删除权限 *********************** -->
+    <delete id="deleteAuth" parameterType="com.xmopay.admincp.dto.AdminAuthDto">
+        delete FROM sys_admin_auth
+        where ROLE_ID = #{roleId}
+            <if test="menuId != null "> and MENU_ID = #{menuId}</if>
+    </delete>
+
+</mapper>

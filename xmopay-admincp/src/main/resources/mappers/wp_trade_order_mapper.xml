@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.TradeOrderDao">
+    <resultMap id="TradeOrderResultMap" type="com.xmopay.admincp.dto.TradeOrderDto">
+        <id column="TOID" jdbcType="INTEGER" property="toid" />
+        <result column="TRAN_TYPE" jdbcType="INTEGER" property="tranType" />
+        <result column="ORDER_SN" jdbcType="VARCHAR" property="orderSn" />
+        <result column="BILLING_SN" jdbcType="VARCHAR" property="billingSn" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="PARTNER_NAME" jdbcType="VARCHAR" property="partnerName" />
+        <result column="PAY_TYPE" jdbcType="VARCHAR" property="payType" />
+        <result column="CHANNEL_CODE" jdbcType="VARCHAR" property="channelCode" />
+        <result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode" />
+        <result column="ORDER_TITLE" jdbcType="VARCHAR" property="orderTitle" />
+        <result column="ORDER_AMOUNT" jdbcType="DECIMAL" property="orderAmount" />
+        <result column="ORDER_TIME" jdbcType="TIMESTAMP" property="orderTime" />
+        <result column="TRADE_TIME" jdbcType="TIMESTAMP" property="tradeTime" />
+        <result column="FINISH_TIME" jdbcType="TIMESTAMP" property="finishTime" />
+        <result column="TRADE_IP" jdbcType="VARCHAR" property="tradeIp" />
+        <result column="TRADE_HASH" jdbcType="VARCHAR" property="tradeHash" />
+        <result column="NOTIFY_URL" jdbcType="VARCHAR" property="notifyUrl" />
+        <result column="RETURN_URL" jdbcType="VARCHAR" property="returnUrl" />
+        <result column="EXTEND_PARAM" jdbcType="VARCHAR" property="extendParam" />
+        <result column="OUT_TRADE_NO" jdbcType="VARCHAR" property="outTradeNo" />
+        <result column="OUT_TRADE_TIME" jdbcType="TIMESTAMP" property="outTradeTime" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="ORDER_STATUS" jdbcType="INTEGER" property="orderStatus" />
+        <result column="SIGN_TYPE" jdbcType="VARCHAR" property="signType" />
+        <result column="VERSION" jdbcType="VARCHAR" property="version" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+      TOID, TRAN_TYPE, ORDER_SN,BILLING_SN, PARTNER_ID, PARTNER_NAME, PAY_TYPE, CHANNEL_CODE,
+      BANK_CODE, ORDER_TITLE, ORDER_AMOUNT, ORDER_TIME, TRADE_TIME, FINISH_TIME, TRADE_IP,
+      TRADE_HASH, NOTIFY_URL, RETURN_URL, EXTEND_PARAM, OUT_TRADE_NO, OUT_TRADE_TIME, REMARK,
+      ORDER_STATUS, SIGN_TYPE, VERSION
+    </sql>
+
+    <sql id="where_condition">
+        <where>
+            <if test="partnerId != null and partnerId != ''">    and PARTNER_ID    = #{partnerId}  </if>
+            <if test="orderSn != null and orderSn != ''">        and ORDER_SN      = #{orderSn}        </if>
+            <if test="bankCode != null and bankCode != ''">and             BANK_CODE   = #{bankCode}   </if>
+            <if test="outTradeNo != null and outTradeNo != ''">  and OUT_TRADE_NO  = #{outTradeNo}     </if>
+            <if test="orderStatus != null and orderStatus !=2  or orderStatus == 0"> and ORDER_STATUS  = #{orderStatus}    </if>
+            <if test="orderStatus != null and orderStatus == 2  or orderStatus == 0"> and (ORDER_STATUS  = #{orderStatus} OR ORDER_STATUS  = 0)   </if>
+            <if test="startTime != null and startTime != ''">    and ORDER_TIME    &gt;= #{startTime}     </if>
+            <if test="endTime != null and endTime != ''">        and ORDER_TIME    &lt;= #{endTime}       </if>
+            <if test="minPayMoney != null and minPayMoney != ''">and ORDER_AMOUNT   &gt;= #{minPayMoney}   </if>
+            <if test="maxPayMoney != null and maxPayMoney != ''">and ORDER_AMOUNT   &lt;= #{maxPayMoney}   </if>
+            <if test="tradeIp != null and tradeIp != ''">        and TRADE_IP        = #{tradeIp}       </if>
+            <if test="channelCode != null and channelCode != ''">and CHANNEL_CODE    = #{channelCode}   </if>
+            <if test="payType != null and payType != ''">and PAY_TYPE    = #{payType}   </if>
+        </where>
+    </sql>
+
+    <select id="getTradeOrderList" parameterType="com.xmopay.admincp.dto.TradeOrderDto" resultMap="TradeOrderResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from wp_trade_order
+        <include refid="where_condition" />
+        ORDER BY FINISH_TIME desc
+    </select>
+
+    <!--获取收款订单汇总信息-->
+    <select id="getTradeOrderTotal" parameterType="com.xmopay.admincp.dto.PartnerDto" resultType="HashMap">
+        select count(0) AS countNum, SUM(ORDER_AMOUNT) AS sumAmount
+        from wp_trade_order
+        <include refid="where_condition"/>
+    </select>
+
+    <select id="getTradeOrderInfo" parameterType="com.xmopay.admincp.dto.TradeOrderDto" resultMap="TradeOrderResultMap">
+        select <include refid="Base_Column_List" />
+        from wp_trade_order
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="partnerId != null and partnerId != ''">    and PARTNER_ID    = #{partnerId}       </if>
+            <if test="orderSn != null and orderSn != ''">        and ORDER_SN      = #{orderSn}            </if>
+            <if test="outTradeNo != null and outTradeNo != ''">  and OUT_TRADE_NO  = #{outTradeNo}         </if>
+            <if test="orderStatus != null  or orderStatus == 0"> and ORDER_STATUS  = #{orderStatus}        </if>
+            <if test="startTime != null and startTime != ''">    and TRADE_TIME    &gt;= #{startTime}      </if>
+            <if test="endTime != null and endTime != ''">        and TRADE_TIME    &lt;= #{endTime}        </if>
+            <if test="minPayMoney != null and minPayMoney != ''">and ORDER_AMOUNT   &gt;= #{minPayMoney}   </if>
+            <if test="maxPayMoney != null and maxPayMoney != ''">and ORDER_AMOUNT   &lt;= #{maxPayMoney}   </if>
+        </trim>
+    </select>
+
+    <update id="updateTradeOrder" parameterType="com.xmopay.admincp.dto.TradeOrderDto">
+        UPDATE wp_trade_order
+        <trim prefix="SET" prefixOverrides=",">
+            <if test="finishTime != null ">,                         FINISH_TIME   = #{finishTime}     </if>
+            <if test="tradeTime != null ">,                          TRADE_TIME    = #{tradeTime}      </if>
+            <if test="orderStatus != null or orderStatus == 0">,     ORDER_STATUS  = #{orderStatus}    </if>
+            <if test="remark != null or remark != ''">,              REMARK        = #{remark}         </if>
+        </trim>
+        WHERE ORDER_SN = #{orderSn}
+        <if test="partnerId != null and partnerId != ''"> AND PARTNER_ID   = #{partnerId}   </if>
+    </update>
+
+</mapper>

@@ -1,0 +1,460 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: auto;
+    max-width: 680px;
+    padding: 0 15px;
+}
+.container .text-muted {
+    margin: 20px 0;
+}
+
+.bank-list{margin-top:10px; margin-bottom: 20px;}
+.bank-col{height: 45px;}
+
+/*银行代码 */
+.bank-list .bank-item {
+    float: left;
+    background-color: #fff;
+    padding: 5px 0;
+    height: 40px;
+    line-height:40px;
+    width: 155px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: 1px solid #D7D7D7;
+    border-radius: 2px;
+    transition: border-color .2s;
+}
+
+.bank-list .bank-item:hover{
+    border: 1px solid #BDDAEE;
+}
+
+.bank-list .selected {
+    border: 2px solid #ff5d5b;
+}
+
+.bank-list .checkbox{
+    float: left;
+    margin-top: 4px;
+    height:20px;
+    line-height: 20px;
+    margin-left: 10px;
+    margin-right: 3px;
+}
+
+#BANK_BJRCB {
+    background-position: 0 0
+}
+
+#BANK_BOBJ {
+    background-position: 0 -28PX
+}
+
+#BANK_CBHB {
+    background-position: 0 -56PX
+}
+
+#BANK_BOCD {
+    background-position: 0 -84PX
+}
+
+#BANK_FUDIAN {
+    background-position: 0 -112PX
+}
+
+#BANK_ICBC {
+    background-position: 0 -140PX
+}
+
+#BANK_CEB {
+    background-position: 0 -168PX
+}
+
+#BANK_CGB,#BANK_GDB {
+    background-position: 0 -196PX
+}
+
+#BANK_HKB {
+    background-position: 0 -224PX
+}
+
+#BANK_HZB, #BANK_HZCB {
+    background-position: 0 -252PX
+}
+
+#BANK_HENGFENG {
+    background-position: 0 -280PX
+}
+
+#BANK_HXBC {
+    background-position: 0 -308PX
+}
+
+#BANK_CCB {
+    background-position: 0 -336PX
+}
+
+#BANK_JSB {
+    background-position: 0 -364PX
+}
+
+#BANK_BCM,#BANK_BCOM,#BANK_BOCOM {
+    background-position: 0 -392PX
+}
+
+#BANK_JINGHUA {
+    background-position: 0 -420PX
+}
+
+#BANK_CMBC {
+    background-position: 0 -448PX
+}
+
+#BANK_NJCB, #BANK_BON {
+    background-position: 0 -476PX
+}
+
+#BANK_NBCB {
+    background-position: 0 -504PX
+}
+
+#BANK_ABC {
+    background-position: 0 -532PX
+}
+
+#BANK_PAB {
+    background-position: 0 -560PX
+}
+
+#BANK_SPDB {
+    background-position: 0 -588PX
+}
+
+#BANK_QDCCB {
+    background-position: 0 -616PX
+}
+
+#BANK_SRCB {
+    background-position: 0 -644PX
+}
+
+#BANK_BOS,#BANK_SHB {
+    background-position: 0 -672PX
+}
+
+#BANK_SDB {
+    background-position: 0 -700PX
+}
+
+#BANK_WZCB {
+    background-position: 0 -728PX
+}
+
+#BANK_CIB {
+    background-position: 0 -756PX
+}
+
+#BANK_CMB {
+    background-position: 0 -784PX
+}
+
+#BANK_ZJTL {
+    background-position: 0 -812PX
+}
+
+#BANK_BOC {
+    background-position: 0 -840PX
+}
+
+#BANK_POST,#BANK_PSBC {
+    background-position: 0 -868PX
+}
+
+#BANK_CITIC {
+    background-position: 0 -896PX
+}
+
+#BANK_CQRCB {
+    background-position: 0 -924PX
+}
+
+#BANK_CQCB {
+    background-position: 0 -952PX
+}
+
+#BANK_GZRCC {
+    background-position: 0 -980PX
+}
+
+#BANK_GZCB {
+    background-position: 0 -1008PX
+}
+
+#BANK_HSB {
+    background-position: 0 -1036PX
+}
+
+#BANK_CZB {
+    background-position: 0 -1064PX
+}
+
+#BANK_BONC {
+    background-position: 0 -1092PX
+}
+
+#BANK_GDNYB {
+    background-position: 0 -1120PX
+}
+
+#BANK_CHAB {
+    background-position: 0 -1148PX
+}
+
+#BANK_DYLSCZ {
+    background-position: 0 -1177PX
+}
+
+#BANK_DZB {
+    background-position: 0 -1205PX
+}
+
+#BANK_LWB {
+    background-position: 0 -1904PX
+}
+
+#BANK_QSB {
+    background-position: 0 -1260PX
+}
+
+#BANK_RZB {
+    background-position: 0 -1289PX
+}
+
+#BANK_TAB {
+    background-position: 0 -1317PX
+}
+
+#BANK_LSB {
+    background-position: 0 -1345PX
+}
+
+#BANK_WFCCB {
+    background-position: 0 -1373PX
+}
+
+#BANK_ORDOS {
+    background-position: 0 -1401PX
+}
+
+#BANK_BOXM {
+    background-position: 0 -1430PX
+}
+
+#BANK_BOLJ {
+    background-position: 0 -1456PX
+}
+
+#BANK_JZCB {
+    background-position: 0 -1484PX
+}
+
+#BANK_JJCCB {
+    background-position: 0 -1512PX
+}
+
+#BANK_CJCCB {
+    background-position: 0 -1568PX
+}
+
+#BANK_BOLY {
+    background-position: 0 -1596PX
+}
+
+#BANK_HUBNX {
+    background-position: 0 -1623PX
+}
+
+#BANK_BHRCB {
+    background-position: 0 -1708PX
+}
+
+#BANK_HBNX {
+    background-position: 0 -1794PX
+}
+
+#BANK_GSNX {
+    background-position: 0 -1652PX
+}
+
+#BANK_BSB {
+    background-position: 0 -1820PX
+}
+
+#BANK_SHXNX {
+    background-position: 0 -1764PX
+}
+
+#BANK_JSNX {
+    background-position: 0 -1681PX
+}
+
+#BANK_WHRCB {
+    background-position: 0 -1736PX
+}
+
+#BANK_JZB {
+    background-position: 0 -1876PX
+}
+
+#BANK_DRCB {
+    background-position: 0 -1848PX
+}
+
+#BANK_NMGNX {
+    background-position: 0 -1959PX
+}
+
+#BANK_PZHCCB {
+    background-position: 0 -1989PX
+}
+
+#BANK_EGB {
+    background-position: 0 -1932PX
+}
+
+#BANK_DYCCB {
+    background-position: 0 -2045PX
+}
+
+#BANK_WHCCB {
+    background-position: 0 -2155PX
+}
+
+#BANK_JLNX {
+    background-position: 0 -2073PX
+}
+
+#BANK_SXNX {
+    background-position: 0 -2128PX
+}
+
+#BANK_BOJN {
+    background-position: 0 -2100PX
+}
+
+#BANK_BOZZ {
+    background-position: 0 -2214PX
+}
+
+#BANK_YTCB {
+    background-position: 0 -2184PX
+}
+
+#BANK_BOBD {
+    background-position: 0 -2016PX
+}
+
+#BANK_SCNX {
+    background-position: 0 -2324PX
+}
+
+#BANK_HNNX {
+    background-position: 0 -2379PX
+}
+
+#BANK_BOGY {
+    background-position: 0 -2240PX
+}
+
+#BANK_LZCB {
+    background-position: 0 -2295PX
+}
+
+#BANK_BOGL {
+    background-position: 0 -2268PX
+}
+
+#BANK_ZJTLCB {
+    background-position: 0 -2353PX
+}
+
+#BANK_BOYK {
+    background-position: 0 -2548PX
+}
+
+#BANK_HUNNX {
+    background-position: 0 -2576PX
+}
+
+#BANK_LNNX {
+    background-position: 0 -2408PX
+}
+
+#BANK_SHBANK {
+    background-position: 0 -2464PX
+}
+
+#BANK_LYCB {
+    background-position: 0 -2436PX
+}
+
+#BANK_ZJKCCB {
+    background-position: 0 -2492PX
+}
+
+#BANK_BOXIA {
+    background-position: 0 -2521PX
+}
+
+#QPAY_UNIONPAY {
+    background-position: 0 -2605PX
+}
+
+#BANK_TCCB {
+    background-position: 0 -2639PX
+}
+
+#WEIXIN_QRCODE {
+    background-position: 0 -2669PX
+}
+
+#BANK_BEA {
+    background-position: 0 -2699PX
+}
+
+#ALIPAY_QRCODE {
+    background-position: 0 -2725PX
+}
+
+#QPAY_MOBPAY {
+    background-position: 0 -2752PX
+}
+
+.bank-logo {
+    background-image: url("../images/bank-logo.min.gif");
+    background-repeat: no-repeat;
+    display: block;
+    width: 120px;
+    height: 28px;
+    overflow: hidden;
+    text-indent: -9999px;
+    float: left;
+    cursor: pointer;
+}

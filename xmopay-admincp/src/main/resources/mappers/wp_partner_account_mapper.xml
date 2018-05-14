@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.PartnerAccountDao">
+  <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.PartnerAccountDto">
+    <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+    <result column="BALANCE" jdbcType="DECIMAL" property="balance" />
+    <result column="FREEZE_BALANCE" jdbcType="DECIMAL" property="freezeBalance" />
+    <result column="HASH_CODE" jdbcType="VARCHAR" property="hashCode" />
+    <result column="LAST_TRADE" jdbcType="TIMESTAMP" property="lastTrade" />
+    <result column="LAST_SIGN" jdbcType="VARCHAR" property="lastSign" />
+  </resultMap>
+
+    <sql id="Base_Column_List">
+        PARTNER_ID, BALANCE, FREEZE_BALANCE, HASH_CODE, LAST_TRADE, LAST_SIGN
+    </sql>
+
+  <insert id="insertPartnerAccount" parameterType="com.xmopay.admincp.dto.PartnerAccountDto">
+    insert into wp_partners_account (PARTNER_ID, BALANCE, FREEZE_BALANCE, 
+      HASH_CODE, LAST_TRADE, LAST_SIGN
+      )
+    values (#{partnerId,jdbcType=VARCHAR}, #{balance,jdbcType=DECIMAL}, #{freezeBalance,jdbcType=DECIMAL}, 
+      #{hashCode,jdbcType=VARCHAR}, #{lastTrade,jdbcType=TIMESTAMP}, #{lastSign,jdbcType=VARCHAR}
+      )
+  </insert>
+
+    <select id="getPartnerAccountByPratnerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+      SELECT <include refid="Base_Column_List"/>
+        FROM wp_partners_account
+        WHERE PARTNER_ID = #{partnerId}
+    </select>
+
+    <update id="updatePartnerAccountByPid" parameterType="com.xmopay.admincp.dto.PartnerAccountDto">
+        UPDATE wp_partners_account
+        <trim prefix="SET" prefixOverrides=",">
+            <if test="balance != null ">,                          BALANCE         = #{balance}       </if>
+            <if test="freezeBalance != null ">,                    FREEZE_BALANCE  = #{freezeBalance} </if>
+            <if test="hashCode != null and hashCode != ''">,       HASH_CODE       = #{hashCode}      </if>
+            <if test="lastTrade != null ">,                        LAST_TRADE      = #{lastTrade}     </if>
+            <if test="lastSign != null and lastSign != ''">,       LAST_SIGN       = #{lastSign}      </if>
+        </trim>
+        WHERE PARTNER_ID = #{partnerId}
+    </update>
+
+    <!-- 当前账户扣款 -->
+    <update id="updateDebitMoney" parameterType="com.xmopay.admincp.dto.PartnerAccountDto">
+        UPDATE wp_partners_account SET BALANCE = BALANCE - #{balance}, LAST_TRADE = #{lastTrade} WHERE  PARTNER_ID = #{partnerId}
+    </update>
+
+    <!-- 当前账户加款 -->
+    <update id="updateAddMoney" parameterType="com.xmopay.admincp.dto.PartnerAccountDto">
+        UPDATE wp_partners_account SET BALANCE = BALANCE + #{balance}, LAST_TRADE = #{lastTrade} WHERE  PARTNER_ID = #{partnerId}
+    </update>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.openapi.dao.MessageQueueDao">
+    <resultMap id="BaseResultMap" type="MessageQueueDto">
+        <id column="MQID" jdbcType="INTEGER" property="mqid" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="ORDER_SN" jdbcType="VARCHAR" property="orderSn" />
+        <result column="MESSAGE_TOPIC" jdbcType="VARCHAR" property="messageTopic" />
+        <result column="MESSAGE_BODY" jdbcType="LONGVARCHAR" property="messageBody" />
+        <result column="THREAD_STATUS" jdbcType="INTEGER" property="threadStatus" />
+        <result column="CONSUMER_STATUS" jdbcType="INTEGER" property="consumerStatus" />
+        <result column="MESSAGE_HOST" jdbcType="VARCHAR" property="messageHost" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+    </resultMap>
+
+    <!-- 消息队列 -->
+    <insert id="insertMessageQueue" parameterType="MessageQueueDto">
+        insert into wp_message_queue
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="partnerId != null and partnerId != ''">,PARTNER_ID</if>
+            <if test="orderSn != null and orderSn != ''">,ORDER_SN</if>
+            <if test="messageTopic != null and messageTopic != ''">,MESSAGE_TOPIC</if>
+            <if test="messageBody != null and messageBody != ''">,MESSAGE_BODY</if>
+            <if test="messageHost != null and messageHost != '' ">,MESSAGE_HOST</if>
+            <if test="dateline != null">,DATELINE</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" prefixOverrides=",">
+            <if test="partnerId != null and partnerId != ''">,#{partnerId}</if>
+            <if test="orderSn != null and orderSn != ''">,#{orderSn}</if>
+            <if test="messageTopic != null and messageTopic != ''">,#{messageTopic}</if>
+            <if test="messageBody != null and messageBody != ''">,#{messageBody}</if>
+            <if test="messageHost != null and messageHost != ''">,#{messageHost}</if>
+            <if test="dateline != null">,#{dateline}</if>
+        </trim>
+    </insert>
+
+</mapper>

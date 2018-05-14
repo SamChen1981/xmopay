@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.dao.GatewayChannelDao">
+    <resultMap id="GatewayChannelResultMap" type="GatewayChannelDto">
+        <id column="CHANNEL_ID" jdbcType="INTEGER" property="channelId"/>
+        <result column="AGENCY_ID" jdbcType="INTEGER" property="agencyId"/>
+        <result column="CHANNEL_TYPE" jdbcType="INTEGER" property="channelType"/>
+        <result column="CHANNEL_CODE" jdbcType="VARCHAR" property="channelCode"/>
+        <result column="CHANNEL_NAME" jdbcType="VARCHAR" property="channelName"/>
+        <result column="CHANNEL_KEY" jdbcType="VARCHAR" property="channelKey"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline"/>
+        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+        <result column="CHANNEL_SECRET" jdbcType="LONGVARCHAR" property="channelSecret"/>
+        <result column="CHANNEL_PARAMS" jdbcType="LONGVARCHAR" property="channelParams"/>
+
+        <association property="gatewayAgencyDto" javaType="GatewayAgencyDto">
+            <id column="GAID" jdbcType="INTEGER" property="gaid"/>
+            <result column="AGENCY_CODE" jdbcType="VARCHAR" property="agencyCode"/>
+            <result column="AGENCY_NAME" jdbcType="VARCHAR" property="agencyName"/>
+            <result column="AGENCY_STATUS" jdbcType="INTEGER" property="agencyStatus"/>
+            <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+            <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline"/>
+            <result column="AGENCY_PARAMS" jdbcType="LONGVARCHAR" property="agencyParams"/>
+        </association>
+    </resultMap>
+
+    <sql id="gc_sql_base_fields">
+        gc.CHANNEL_ID,
+        gc.AGENCY_ID,
+        gc.CHANNEL_TYPE,
+        gc.CHANNEL_CODE,
+        gc.CHANNEL_NAME,
+        gc.CHANNEL_KEY,
+        gc.CHANNEL_SECRET,
+        gc.CHANNEL_PARAMS,
+        gc.UPDATE_TIME,
+        gc.STATUS,
+        gc.DATELINE
+  </sql>
+
+    <sql id="ga_sql_base_fields">
+        ga.GAID,
+        ga.AGENCY_CODE,
+        ga.AGENCY_NAME,
+        ga.AGENCY_PARAMS,
+        ga.AGENCY_STATUS,
+        ga.UPDATE_TIME,
+        ga.DATELINE
+    </sql>
+
+    <!-- 根据渠道号查询渠道信息 -->
+    <select id="getGatewayChannelInfo" resultMap="GatewayChannelResultMap" parameterType="GatewayChannelDto">
+        SELECT gc.*, ga.AGENCY_CODE, ga.AGENCY_NAME, ga.AGENCY_STATUS, ga.AGENCY_PARAMS FROM wp_gateway_channel gc,
+        wp_gateway_agency ga
+        WHERE ga.GAID = gc.AGENCY_ID
+        and gc.CHANNEL_CODE = #{channelCode}
+    </select>
+
+    <select id="getGatewayChannelByCode" parameterType="String" resultMap="GatewayChannelResultMap">
+        SELECT
+        <include refid="gc_sql_base_fields"/>,
+        <include refid="ga_sql_base_fields"/>
+        FROM wp_gateway_channel gc , wp_gateway_agency ga
+        WHERE gc.AGENCY_ID = ga.GAID
+        and gc.CHANNEL_CODE = #{channelCode}
+        limit 1
+    </select>
+</mapper>
