@@ -1,6 +1,6 @@
 # XMOPAY
 
-> 官方交流群 905583231
+> XMOPAY官方交流群 476293805
 
 ---
 
@@ -20,4 +20,4 @@ V1.0 | 2018.05.13| 完成spring-cloud架构，对接支付包、微信渠道
 
 #### 项目测试
 demo测试
-
+![demo测试图](https://github.com/xmopay/sources/blob/master/demo.png)
