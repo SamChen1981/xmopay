@@ -29,15 +29,15 @@ V1.0 | 2018.05.13| 完成spring-cloud架构，对接支付包、微信渠道
 ---
 
 #### 项目结构
-xmopay
-├── README.md
-├── xmopay-admincp    -- 后台管理
-├── xmopay-channel    -- 上游渠道
-├── xmopay-common     -- 公共类
-├── xmopay-demo       -- 测试demo
-├── xmopay-funds      -- 资金管理
-├── xmopay-openapi    -- API网关中心
-└── xmopay-registry   -- 服务注册中心
+    xmopay
+    ├── README.md
+    ├── xmopay-admincp    -- 后台管理
+    ├── xmopay-channel    -- 上游渠道
+    ├── xmopay-common     -- 公共类
+    ├── xmopay-demo       -- 测试demo
+    ├── xmopay-funds      -- 资金管理
+    ├── xmopay-openapi    -- API网关中心
+    └── xmopay-registry   -- 服务注册中心
 
 ---
 
