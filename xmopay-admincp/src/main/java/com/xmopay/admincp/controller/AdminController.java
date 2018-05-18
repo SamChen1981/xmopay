@@ -3,14 +3,8 @@ package com.xmopay.admincp.controller;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.xmopay.admincp.common.*;
-import com.xmopay.admincp.dto.AdminAuthDto;
-import com.xmopay.admincp.dto.AdminMenuDto;
-import com.xmopay.admincp.dto.AdminRoleDto;
-import com.xmopay.admincp.dto.AdminUserDto;
-import com.xmopay.admincp.service.AdminAuthService;
-import com.xmopay.admincp.service.AdminMenuService;
-import com.xmopay.admincp.service.AdminRoleService;
-import com.xmopay.admincp.service.AdminUserService;
+import com.xmopay.admincp.dto.*;
+import com.xmopay.admincp.service.*;
 import com.xmopay.common.constant.XmoPayConstants;
 import com.xmopay.common.utils.XmoPayUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +43,8 @@ public class AdminController {
     @Autowired
     private AdminMenuService adminMenuService;
 
+    @Autowired
+    private HandleLogsService handleLogsService;
 
     @RequestMapping(value = "login")
     public String login() {
@@ -220,6 +216,19 @@ public class AdminController {
                 //设置登录后的session
                 HttpSession session = request.getSession();
                 session.setAttribute(XmoPayConstants.SYSADMIN_SESSION, adminUserDto);
+
+                //记录日志
+                HandleLogsDto handleLogsDto = new HandleLogsDto();
+                handleLogsDto.setPuserid(adminUserDto.getMuId().toString());
+                handleLogsDto.setPartnerId("0");
+                handleLogsDto.setHandleType("TYPE_SYSADMIN_HANDLE");
+                handleLogsDto.setHandleCode("SYSADMIN_LOGIN");
+                handleLogsDto.setHandleEvents("登陆成功!");
+                handleLogsDto.setHandleParams(logmsg.replace("{}", "登陆成功, 欢迎进入系统..."));
+                handleLogsDto.setHandleStatus(1);
+                handleLogsDto.setHandleIp(XmoPayUtils.getIpAddr(request));
+                handleLogsDto.setDateline(new Date());
+                handleLogsService.insertHandleLogs(handleLogsDto);
 
                 //输出登录成功信息
                 log.info(logmsg, "登陆成功, 欢迎进入系统...");

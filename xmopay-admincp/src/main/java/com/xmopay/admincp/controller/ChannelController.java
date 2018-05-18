@@ -7,13 +7,11 @@ import com.xmopay.admincp.common.Pagesutils;
 import com.xmopay.admincp.common.SingleResult;
 import com.xmopay.admincp.common.WebCommon;
 import com.xmopay.admincp.common.XmopayResponse;
-import com.xmopay.admincp.dto.AdminUserDto;
-import com.xmopay.admincp.dto.GatewayAgencyDto;
-import com.xmopay.admincp.dto.GatewayBalanceDto;
-import com.xmopay.admincp.dto.GatewayChannelDto;
+import com.xmopay.admincp.dto.*;
 import com.xmopay.admincp.service.GatewayAgencyService;
 import com.xmopay.admincp.service.GatewayBalanceService;
 import com.xmopay.admincp.service.GatewayChannelService;
+import com.xmopay.admincp.service.HandleLogsService;
 import com.xmopay.common.utils.XmoPayUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -44,6 +42,8 @@ public class ChannelController {
     @Autowired
     private GatewayBalanceService gatewayBalanceService;
 
+    @Autowired
+    private HandleLogsService handleLogsService;
 
     /**
      * 渠道列表
@@ -173,6 +173,19 @@ public class ChannelController {
             dto.setChannelParams(channelParams);
             SingleResult state = gatewayChannelService.insertGatewayChannel(dto);
             if (state.isSuccess()) {
+                //记录日志
+                HandleLogsDto handleLogsDto = new HandleLogsDto();
+                handleLogsDto.setPuserid(sessionMuid.toString());
+                handleLogsDto.setPartnerId("0");
+                handleLogsDto.setHandleType("TYPE_SYSADMIN_HANDLE");
+                handleLogsDto.setHandleCode("SYSADMIN_LOG");
+                handleLogsDto.setHandleEvents("添加网关渠道成功!");
+                handleLogsDto.setHandleParams(logmsg.replace("{}", "添加网关渠道成功!"));
+                handleLogsDto.setHandleStatus(1);
+                handleLogsDto.setHandleIp(XmoPayUtils.getIpAddr(request));
+                handleLogsDto.setDateline(new Date());
+                handleLogsService.insertHandleLogs(handleLogsDto);
+
                 log.info(logmsg, "添加网关渠道成功!");
                 result.setResultMsg("添加成功");
                 result.setResultCode(XmopayResponse.SUCCESS);
@@ -240,6 +253,19 @@ public class ChannelController {
             dto.setChannelId(Integer.parseInt(channelId));
             SingleResult state = gatewayChannelService.updateGatewayChannel(dto);
             if (state.isSuccess()) {
+                //记录日志
+                HandleLogsDto handleLogsDto = new HandleLogsDto();
+                handleLogsDto.setPuserid(sessionMuid.toString());
+                handleLogsDto.setPartnerId("0");
+                handleLogsDto.setHandleType("TYPE_SYSADMIN_HANDLE");
+                handleLogsDto.setHandleCode("SYSADMIN_LOG");
+                handleLogsDto.setHandleEvents("修改网关渠道成功!");
+                handleLogsDto.setHandleParams(logmsg.replace("{}", "修改网关渠道成功!"));
+                handleLogsDto.setHandleStatus(1);
+                handleLogsDto.setHandleIp(XmoPayUtils.getIpAddr(request));
+                handleLogsDto.setDateline(new Date());
+                handleLogsService.insertHandleLogs(handleLogsDto);
+
                 log.info(logmsg, "修改网关渠道成功!");
                 result.setResultMsg("更新成功");
                 result.setResultCode(XmopayResponse.SUCCESS);
@@ -262,6 +288,10 @@ public class ChannelController {
     @RequestMapping(value = "deleteGatewayChannel", method = RequestMethod.POST)
     public XmopayResponse<Integer> deleteGatewayChannel(@RequestParam(value = "channel_id") Integer channelId,
                                                           HttpServletRequest request) {
+        //记录日志需要
+        AdminUserDto sessionUser = WebCommon.getSessionUserInfo(request);
+        Integer sessionMuid          = sessionUser.getMuId();
+
         XmopayResponse<Integer> respResult = new XmopayResponse<>(XmopayResponse.FAILURE, "删除失败", 0);
         try {
             if (channelId == null || channelId <= 0) {
@@ -271,10 +301,22 @@ public class ChannelController {
             SingleResult<Integer> result = gatewayChannelService.deleteGatewayChannel(channelId);
             if (result.isSuccess()) {
                 // 添加操作日志
-                String logmsg = "当前登录者=" + WebCommon.getSessionUserInfo(request).getMuId()
-                        + ", 事件描述={}, 请求参数=" + XmoPayUtils.formRequestMap(request.getParameterMap())
+                String logmsg = "当前登录者=" + sessionMuid + ", 事件描述={}, 请求参数=" + XmoPayUtils.formRequestMap(request.getParameterMap())
                         + ", 请求头=" + XmoPayUtils.getHeadersInfo(request);
                 log.info(ChannelController.class.getSimpleName() + ".deleteGatewayChannel(), " + logmsg);
+
+                //记录日志
+                HandleLogsDto handleLogsDto = new HandleLogsDto();
+                handleLogsDto.setPuserid(sessionMuid.toString());
+                handleLogsDto.setPartnerId("0");
+                handleLogsDto.setHandleType("TYPE_SYSADMIN_HANDLE");
+                handleLogsDto.setHandleCode("SYSADMIN_LOG");
+                handleLogsDto.setHandleEvents("删除网关渠道成功!");
+                handleLogsDto.setHandleParams(logmsg.replace("{}", "删除网关渠道成功!"));
+                handleLogsDto.setHandleStatus(1);
+                handleLogsDto.setHandleIp(XmoPayUtils.getIpAddr(request));
+                handleLogsDto.setDateline(new Date());
+                handleLogsService.insertHandleLogs(handleLogsDto);
 
                 respResult.setResultMsg("删除成功");
                 respResult.setResultCode(XmopayResponse.SUCCESS);
@@ -400,6 +442,19 @@ public class ChannelController {
             dto.setDateline(new Date());
             SingleResult<Integer> state = gatewayAgencyService.insertGatewayAgency(dto);
             if (state.isSuccess()) {
+                //记录日志
+                HandleLogsDto handleLogsDto = new HandleLogsDto();
+                handleLogsDto.setPuserid(sessionMuid.toString());
+                handleLogsDto.setPartnerId("0");
+                handleLogsDto.setHandleType("TYPE_SYSADMIN_HANDLE");
+                handleLogsDto.setHandleCode("SYSADMIN_LOG");
+                handleLogsDto.setHandleEvents("添加机构成功!");
+                handleLogsDto.setHandleParams(logmsg.replace("{}", "添加机构成功!"));
+                handleLogsDto.setHandleStatus(1);
+                handleLogsDto.setHandleIp(XmoPayUtils.getIpAddr(request));
+                handleLogsDto.setDateline(new Date());
+                handleLogsService.insertHandleLogs(handleLogsDto);
+
                 log.info(logmsg, "添加机构成功!");
                 respResult.setResultMsg("添加成功");
                 respResult.setResultCode(XmopayResponse.SUCCESS);
@@ -468,6 +523,19 @@ public class ChannelController {
 
             SingleResult state = gatewayAgencyService.updateGatewayAgency(dto);
             if (state.isSuccess()) {
+                //记录日志
+                HandleLogsDto handleLogsDto = new HandleLogsDto();
+                handleLogsDto.setPuserid(sessionMuid.toString());
+                handleLogsDto.setPartnerId("0");
+                handleLogsDto.setHandleType("TYPE_SYSADMIN_HANDLE");
+                handleLogsDto.setHandleCode("SYSADMIN_LOG");
+                handleLogsDto.setHandleEvents("更新机构成功!");
+                handleLogsDto.setHandleParams(logmsg.replace("{}", "更新机构成功!"));
+                handleLogsDto.setHandleStatus(1);
+                handleLogsDto.setHandleIp(XmoPayUtils.getIpAddr(request));
+                handleLogsDto.setDateline(new Date());
+                handleLogsService.insertHandleLogs(handleLogsDto);
+
                 log.info(logmsg, "更新机构成功!");
                 result.setResultMsg("更新成功");
                 result.setResultCode(XmopayResponse.SUCCESS);

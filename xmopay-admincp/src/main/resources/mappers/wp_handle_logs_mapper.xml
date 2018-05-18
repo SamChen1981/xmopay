@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmopay.admincp.dao.HandleLogsDao">
+    <resultMap id="BaseResultMap" type="com.xmopay.admincp.dto.HandleLogsDto">
+        <id column="HLID" jdbcType="INTEGER" property="hlid" />
+        <result column="PUSERID" jdbcType="VARCHAR" property="puserid" />
+        <result column="PARTNER_ID" jdbcType="VARCHAR" property="partnerId" />
+        <result column="HANDLE_TYPE" jdbcType="VARCHAR" property="handleType" />
+        <result column="HANDLE_CODE" jdbcType="VARCHAR" property="handleCode" />
+        <result column="ORDER_SN" jdbcType="VARCHAR" property="orderSn" />
+        <result column="HANDLE_EVENTS" jdbcType="VARCHAR" property="handleEvents" />
+        <result column="HANDLE_STATUS" jdbcType="INTEGER" property="handleStatus" />
+        <result column="HANDLE_IP" jdbcType="VARCHAR" property="handleIp" />
+        <result column="DATELINE" jdbcType="TIMESTAMP" property="dateline" />
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xmopay.admincp.dto.HandleLogsDto">
+        <result column="HANDLE_PARAMS" jdbcType="LONGVARCHAR" property="handleParams" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    HLID, PUSERID, PARTNER_ID, HANDLE_TYPE, HANDLE_CODE, ORDER_SN, HANDLE_EVENTS, HANDLE_STATUS,
+    HANDLE_IP, DATELINE
+  </sql>
+    <sql id="Blob_Column_List">
+    HANDLE_PARAMS
+  </sql>
+
+    <select id="getHandleLogsList" parameterType="com.xmopay.admincp.dto.HandleLogsDto" resultMap="ResultMapWithBLOBs">
+        select  <include refid="Base_Column_List" />,    <include refid="Blob_Column_List" />
+        from wp_handle_logs
+        <where>
+            <if test="puserid != null and puserid != ''">           and PUSERID       =  #{puserid}             </if>
+            <if test="partnerId != null and partnerId != ''">       and PARTNER_ID    =  #{partnerId}           </if>
+            <if test="handleType != null and handleType != ''">     and HANDLE_TYPE   =  #{handleType}          </if>
+            <if test="handleCode != null and handleCode != ''">     and HANDLE_CODE   =  #{handleCode}          </if>
+            <if test="orderSn != null and orderSn != ''">           and ORDER_SN      =  #{orderSn}             </if>
+            <if test="handleEvents != null and handleEvents != ''"> and HANDLE_EVENTS like '%${handleEvents}%'  </if>
+            <if test="handleParams != null and handleParams != ''"> and HANDLE_PARAMS like '%${handleParams}%'  </if>
+            <if test="handleStatus != null or handleStatus == 0 ">  and HANDLE_STATUS =  #{handleStatus}        </if>
+            <if test="startTime != null and startTime != ''">       and DATELINE      &gt;= #{startTime}           </if>
+            <if test="endTime != null and endTime != ''">           and DATELINE      &lt;= #{endTime}             </if>
+        </where>
+        order by DATELINE desc
+    </select>
+
+    <insert id="insertHandleLogs" parameterType="com.xmopay.admincp.dto.HandleLogsDto">
+        insert into wp_handle_logs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hlid != null">
+                HLID,
+            </if>
+            <if test="puserid != null and puserid != ''">
+                PUSERID,
+            </if>
+            <if test="partnerId != null and partnerId != ''">
+                PARTNER_ID,
+            </if>
+            <if test="handleType != null and handleType != ''">
+                HANDLE_TYPE,
+            </if>
+            <if test="handleCode != null and handleCode != ''">
+                HANDLE_CODE,
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                ORDER_SN,
+            </if>
+            <if test="handleEvents != null and handleEvents != ''">
+                HANDLE_EVENTS,
+            </if>
+            <if test="handleStatus != null and handleStatus != ''">
+                HANDLE_STATUS,
+            </if>
+            <if test="handleIp != null and handleType != ''">
+                HANDLE_IP,
+            </if>
+            <if test="dateline != null ">
+                DATELINE,
+            </if>
+            <if test="handleParams != null and handleParams != ''">
+                HANDLE_PARAMS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hlid != null">
+                #{hlid,jdbcType=INTEGER},
+            </if>
+            <if test="puserid != null and puserid != ''">
+                #{puserid,jdbcType=VARCHAR},
+            </if>
+            <if test="partnerId != null and partnerId != ''">
+                #{partnerId,jdbcType=VARCHAR},
+            </if>
+            <if test="handleType != null and handleType != ''">
+                #{handleType,jdbcType=VARCHAR},
+            </if>
+            <if test="handleCode != null and handleCode != ''">
+                #{handleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orderSn != null and orderSn != ''">
+                #{orderSn,jdbcType=VARCHAR},
+            </if>
+            <if test="handleEvents != null and handleEvents != ''">
+                #{handleEvents,jdbcType=VARCHAR},
+            </if>
+            <if test="handleStatus != null and handleStatus != ''">
+                #{handleStatus,jdbcType=INTEGER},
+            </if>
+            <if test="handleIp != null and handleIp != ''">
+                #{handleIp,jdbcType=VARCHAR},
+            </if>
+            <if test="dateline != null">
+                #{dateline,jdbcType=TIMESTAMP},
+            </if>
+            <if test="handleParams != null and handleParams != ''">
+                #{handleParams,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

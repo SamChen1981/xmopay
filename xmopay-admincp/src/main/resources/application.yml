@@ -34,9 +34,12 @@ datasource:
   # 使用druid数据源
   driver-class-name: com.mysql.cj.jdbc.Driver
   type: com.alibaba.druid.pool.DruidDataSource
-  url: jdbc:mysql://127.0.0.1:3308/xmopayv20?autoReconnect=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+#  url: jdbc:mysql://127.0.0.1:3308/xmopayv20?autoReconnect=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+  url: jdbc:mysql://paycloud.mysql.rds.aliyuncs.com:3308/xmopayv20?autoReconnect=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+#  username: xmopay
   username: xmopay
-  password: qj3U8wd3cJ6TDDbOXQxLbIQon7Wy0MQ1SSWCBBI0TXScC1bwT/eWysbh4fZhmlAk8WRBZ9jXTZKVdR70O+oniA==
+#  password: qj3U8wd3cJ6TDDbOXQxLbIQon7Wy0MQ1SSWCBBI0TXScC1bwT/eWysbh4fZhmlAk8WRBZ9jXTZKVdR70O+oniA==
+  password: d5sHjlmkqA2RivMeP0tSLd4xgM1B9xka98PZGQ8khXmH+oZ2cTD2hjH7WJhCGMha4FKdXlKXbjE1k35FWhY6wg==
   # 下面为连接池的补充设置，应用到上面所有数据源中
   # 初始化大小，最小，最大
   initialSize: 1
@@ -60,7 +63,8 @@ datasource:
   #打开慢SQL记录
   logSlowSql: true
   # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALihc+CoZDAzfMH/IaZ6GCN74Lproainl8ZGeZyAW6Q+Phpr9fuIJaYcdAe1abIu1zF5RNxePcbXzbk2xSf0OeUCAwEAAQ==
+#  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALihc+CoZDAzfMH/IaZ6GCN74Lproainl8ZGeZyAW6Q+Phpr9fuIJaYcdAe1abIu1zF5RNxePcbXzbk2xSf0OeUCAwEAAQ==
+  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJlqXw7uY4o146q+RL0vh0GalytdVH+2OLfO2OST5JHREF5sXbpazp3rTO2Y8OR34UmHSYdK5Ad1DgJRj4S4DtECAwEAAQ==
   # 合并多个DruidDataSource的监控数据
   #useGlobalDataSourceStat: true
 
