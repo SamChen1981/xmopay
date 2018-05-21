@@ -7,6 +7,7 @@ import com.xmopay.funds.message.MessageConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -29,12 +30,6 @@ public class FundsMain implements IFundsMain {
 
     private static final Logger logger = LoggerFactory.getLogger(FundsMain.class);
 
-//    private static final Long MAX_CONNECTION_TIME = 180000L;
-    private static final Long MAX_CONNECTION_TIME = 15000L;
-
-    @Value("${funds.execute.transferToHost}")
-    private String transferToHost;
-
     @Value("${funds.execute.stop:true}")
     private Boolean stop;
 
@@ -51,17 +46,17 @@ public class FundsMain implements IFundsMain {
     private MessageConsumer messageConsumer;
 
     @Override
+    @Async
     public void execute() {
+        System.out.println("=====" + Thread.currentThread().getName() + "=========");
         if (!enable) {
             logger.info("*********************未开启资金结算读取任务*********************");
             return;
         }
 
         Connection connection = null;
-        long connStart = 0L;
         try {
             connection = druidDataSource.getConnection();
-            connStart = System.currentTimeMillis();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("读取资金结算消息数据, 获取数据库连接异常!", e);
@@ -72,11 +67,14 @@ public class FundsMain implements IFundsMain {
         PreparedStatement statement = null;
         ResultSet rs = null;
         try {
+            MessageEntity messageEntity = null;
+            List<Integer> mqIds = null;
+
             while (!stop) {
-                MessageEntity messageEntity = null;
+                mqIds = new ArrayList<>(16);
+
                 statement = connection.prepareStatement(sql);
                 rs = statement.executeQuery();
-                List<Integer> mqIds = new ArrayList<>(16);
                 while (rs.next()) {
                     int mqId = rs.getInt("MQID");
                     int notifyCount = rs.getInt("NOTIFY_COUNT");
@@ -136,4 +134,5 @@ public class FundsMain implements IFundsMain {
     private String getMessageQueueSql() {
         return "SELECT * FROM wp_message_queue WHERE THREAD_STATUS = 0 AND CONSUMER_STATUS = 0 order by DATELINE ASC limit 25";
     }
+
 }
