@@ -158,6 +158,7 @@
             <div class="col-sm-6">
                 <button id="searchHandle." onclick="toggleSearchDiv();" type="button" class="btn btn-primary btn-sm">搜索订单</button>
                 <#if sessionAdminUserInfo.roleId==1><button onclick="queryOrders()" type="button" class="btn btn-primary btn-sm">一键查单</button></#if>
+                <a target="_blank" href="http://demo.xmopay.com">交易测试</a>
             </div>
             <div class="col-sm-6">
                 <nav class="pages pull-right">

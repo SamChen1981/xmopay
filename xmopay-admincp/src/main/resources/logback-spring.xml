@@ -10,7 +10,7 @@
 
     <!-- file_error 按照每天生成日志文件 -->
     <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logPath}/error_.log</file>
+        <file>${logPath}/error_</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${logPattern}</pattern>
             <charset>UTF-8</charset>
@@ -33,7 +33,7 @@
 
     <!-- file_info 按照每天生成日志文件 -->
     <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logPath}/info_.log</file>
+        <file>${logPath}/info_</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${logPattern}</pattern>
             <charset>UTF-8</charset>

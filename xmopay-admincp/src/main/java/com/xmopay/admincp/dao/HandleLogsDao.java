@@ -10,4 +10,8 @@ public interface HandleLogsDao {
     Integer insertHandleLogs(HandleLogsDto handleLogsDto);
 
     List<HandleLogsDto> getHandleLogsList(HandleLogsDto handleLogsDto);
+
+    Integer updateHandleLogs(HandleLogsDto handleLogsDto);
+
+    HandleLogsDto getHandleLogsById(HandleLogsDto handleLogsDto);
 }

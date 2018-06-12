@@ -121,7 +121,7 @@
                             </#if>
                         </td>
                         <td title="${list.partnerId}"><span class="green"> ${list.puserid} </span></td>
-                        <td>${list.handleIp}</td>
+                        <td>${list.handleIp}<a href="javascript:getIp('${list.hlid}')">&nbsp</a></td>
                         <td><span>${list.dateline?string('yyyy-MM-dd HH:mm:ss')}</span></td>
                         <td title="${list.handleParams}">
 							<#if list.handleParams?? && list.handleParams?length lt 50>
@@ -147,7 +147,21 @@
         <#include "../footer.ftl">
     </#if>
     <script>
-
+        function getIp(hlid){
+            $.ajax({
+                type: "post",
+                url: "hlogs/getIpInfo",
+                data: {hlid:hlid},
+                dataType : "json",
+                async:false,
+                success: function(data){
+                    return
+                },
+                error: function(){
+                    return
+                }
+            });
+        }
     </script>
 
 </#escape>

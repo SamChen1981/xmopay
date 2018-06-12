@@ -8,6 +8,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.config.Registry;
@@ -54,8 +55,8 @@ public class HttpClientUtils {
     private static PoolingHttpClientConnectionManager clientConnectionManager = null;
     private static CloseableHttpClient httpClient = null;
     private static RequestConfig config = RequestConfig.custom()
-            .setConnectTimeout(30000) // 设置连接超时
-            .setSocketTimeout(30000) // 设置读取超时
+            .setConnectTimeout(20000) // 设置连接超时
+            .setSocketTimeout(20000) // 设置读取超时
             .setConnectionRequestTimeout(1000) // 设置从连接池获取连接实例的超时
             .build();
 
@@ -263,6 +264,52 @@ public class HttpClientUtils {
             e.printStackTrace();
             //logger.error("[HttpClient]: HttpResponse Exception A2=" + e.getMessage());
         }
+    }
+
+    /**
+     * 通过get请求url地址,获取返回结果
+     *
+     * @param url 发送请求的url
+     * @return
+     * @throws Exception
+     */
+    public static String rsyncGet(String url) throws Exception {
+        HttpGet httpPost = new HttpGet(url);
+
+        CloseableHttpResponse response = null;
+        String respResult = null;
+        synchronized (syncLock) {
+            try {
+
+                response = getHttpClient().execute(httpPost);
+
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        respResult = EntityUtils.toString(entity, "utf-8");
+                        response.close();
+                    }
+                } else {
+                    httpPost.abort();
+                    logger.error("[HttpClient]: Unexpected response statusCode=" + statusCode);
+                    throw new ClientProtocolException("Unexpected response statusCode=" + statusCode);
+                }
+            } catch (IOException e) {
+                logger.error("[HttpClient]: printStackTrace=" + e);
+            } finally {
+                httpPost.releaseConnection();
+                if (response != null) {
+                    try {
+                        EntityUtils.consume(response.getEntity());
+                        response.close();
+                    } catch (IOException e) {
+                        logger.error("[HttpClient]: printStackTrace=" + e);
+                    }
+                }
+            }
+        }
+        return respResult;
     }
 
     /**

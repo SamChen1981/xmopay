@@ -16,8 +16,8 @@ body{background-color:#223035}
 	<div class="modal in" id="login-modal" >
 		<p>登录：<span id="msgTips"></span></p>
 		<div class="login-form clearfix">
-			<input id="username" name="username" type="text" placeholder="帐号：" value="" onblur="googlecheck(this.value);" />
-			<input id="password" name="password" type="password" placeholder="密码：" value="" />
+			<input id="username" name="username" readonly type="text" placeholder="帐号：" value="admin" onblur="googlecheck(this.value);" />
+			<input id="password" name="password" readonly type="password" placeholder="密码：" value="admin123" />
 			<input id="googlecode" name="googlecode" type="text" placeholder="Google安全码：" style="display: none">
 			<input type="button" name="type" class="button-blue login" value="登录" onclick="checkLogin()">
 		</div>

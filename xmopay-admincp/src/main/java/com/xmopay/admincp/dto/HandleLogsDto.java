@@ -29,4 +29,6 @@ public class HandleLogsDto extends BaseDto {
 
     private String handleParams;
 
+    private String ipInfo;
+
 }

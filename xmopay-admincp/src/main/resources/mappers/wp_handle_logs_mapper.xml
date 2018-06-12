@@ -15,13 +15,14 @@
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xmopay.admincp.dto.HandleLogsDto">
         <result column="HANDLE_PARAMS" jdbcType="LONGVARCHAR" property="handleParams" />
+        <result column="IP_INFO" jdbcType="LONGVARCHAR" property="ipInfo" />
     </resultMap>
     <sql id="Base_Column_List">
     HLID, PUSERID, PARTNER_ID, HANDLE_TYPE, HANDLE_CODE, ORDER_SN, HANDLE_EVENTS, HANDLE_STATUS,
     HANDLE_IP, DATELINE
   </sql>
     <sql id="Blob_Column_List">
-    HANDLE_PARAMS
+    HANDLE_PARAMS, IP_INFO
   </sql>
 
     <select id="getHandleLogsList" parameterType="com.xmopay.admincp.dto.HandleLogsDto" resultMap="ResultMapWithBLOBs">
@@ -69,7 +70,7 @@
             <if test="handleStatus != null and handleStatus != ''">
                 HANDLE_STATUS,
             </if>
-            <if test="handleIp != null and handleType != ''">
+            <if test="handleIp != null and handleIp != ''">
                 HANDLE_IP,
             </if>
             <if test="dateline != null ">
@@ -77,6 +78,9 @@
             </if>
             <if test="handleParams != null and handleParams != ''">
                 HANDLE_PARAMS,
+            </if>
+            <if test="ipInfo != null and ipInfo != ''">
+                IP_INFO,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -113,6 +117,18 @@
             <if test="handleParams != null and handleParams != ''">
                 #{handleParams,jdbcType=LONGVARCHAR},
             </if>
+            <if test="ipInfo != null and ipInfo != ''">
+                #{ipInfo,jdbcType=LONGVARCHAR},
+            </if>
         </trim>
     </insert>
+
+    <update id="updateHandleLogs" parameterType="com.xmopay.admincp.dto.HandleLogsDto">
+        update wp_handle_logs set IP_INFO = #{ipInfo} where HLID = #{hlid}
+    </update>
+
+    <select id="getHandleLogsById" parameterType="com.xmopay.admincp.dto.HandleLogsDto" resultMap="ResultMapWithBLOBs">
+        select  <include refid="Base_Column_List" />,    <include refid="Blob_Column_List" />
+        from wp_handle_logs where HLID = #{hlid}
+    </select>
 </mapper>

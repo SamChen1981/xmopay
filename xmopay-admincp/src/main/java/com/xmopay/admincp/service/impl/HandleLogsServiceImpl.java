@@ -44,4 +44,34 @@ public class HandleLogsServiceImpl implements HandleLogsService {
         }
         return result;
     }
+
+    @Override
+    public SingleResult<Integer> updateHandleLogs(HandleLogsDto handleLogsDto) {
+        SingleResult<Integer> result = new SingleResult<>(false, null);
+        try {
+            int line = handleLogsDao.updateHandleLogs(handleLogsDto);
+            if (line > 0) {
+                result.setResult(line);
+                result.setSuccess(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public SingleResult<HandleLogsDto> getHandleLogsById(HandleLogsDto handleLogsDto) {
+        SingleResult<HandleLogsDto> result = new SingleResult<>(false, null);
+        try {
+            HandleLogsDto handleLogs = handleLogsDao.getHandleLogsById(handleLogsDto);
+            if (handleLogs.getHlid() != null) {
+                result.setResult(handleLogs);
+                result.setSuccess(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

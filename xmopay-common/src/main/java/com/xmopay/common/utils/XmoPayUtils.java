@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.w3c.dom.Node;
@@ -130,6 +131,12 @@ public class XmoPayUtils {
         } else if (obj instanceof Set) {
             Set set = (Set) obj;
             return (null == set || 0 == set.size());
+        } else if (obj instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) obj;
+            return (null == jsonObject || 0 == jsonObject.size());
+        } else if (obj instanceof JSON) {
+            JSON json = (JSON) obj;
+            return (null == json);
         }
         return true;
     }
@@ -164,6 +171,30 @@ public class XmoPayUtils {
                 out.append(current);
         }
         return out.toString();
+    }
+
+    /**
+     * 判断是否是xml结构
+     */
+    public static boolean isXML(String value) {
+        try {
+            DocumentHelper.parseText(value);
+        } catch (DocumentException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断是否是JSON结构
+     */
+    public static boolean isJson(String content){
+        try {
+            JSONObject.parseObject(content);
+            return  true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**

@@ -8,4 +8,8 @@ public interface HandleLogsService {
     SingleResult<Integer> insertHandleLogs(HandleLogsDto handleLogsDto);
 
     SingleResult<PageInfo> getHandleLogsList(HandleLogsDto handleLogsDto);
+
+    SingleResult<Integer> updateHandleLogs(HandleLogsDto handleLogsDto);
+
+    SingleResult<HandleLogsDto> getHandleLogsById(HandleLogsDto handleLogsDto);
 }

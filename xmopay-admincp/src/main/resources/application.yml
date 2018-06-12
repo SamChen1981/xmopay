@@ -96,7 +96,8 @@ redis:
     min-idle: 0
 
 logs:
-  path: ./logs
+#  path: ./logs
+  path: /alidata/logs/xmopay-admincp
   level: info
 
 #pagehelper

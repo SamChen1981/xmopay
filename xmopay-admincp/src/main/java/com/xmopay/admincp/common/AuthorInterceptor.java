@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AuthorInterceptor implements HandlerInterceptor {
 
-    private final String[] SYSADMIN_PASS_PATH = new String[]{"login", "adlogin", "checkGoogleCode", ".js", ".css"};
+    private final String[] SYSADMIN_PASS_PATH = new String[]{"login", "adlogin", "checkGoogleCode", ".js", ".css", ".ico"};
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
