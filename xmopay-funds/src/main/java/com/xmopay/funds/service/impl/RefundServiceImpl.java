@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * @date 10:03 AM, 2018/4/27
  */
 @Service("tradeRefundServiceImpl")
-public class RefundServiceImplI implements IRefundServiceI {
+public class RefundServiceImpl implements IRefundServiceI {
 
     @Override
     public void execute(MessageEntity entity) {
