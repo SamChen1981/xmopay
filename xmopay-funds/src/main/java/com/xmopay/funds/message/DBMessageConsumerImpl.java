@@ -2,7 +2,7 @@ package com.xmopay.funds.message;
 
 import com.xmopay.funds.config.YmlConfig;
 import com.xmopay.funds.entity.MessageEntity;
-import com.xmopay.funds.service.BasicTradeService;
+import com.xmopay.funds.service.IBasicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class DBMessageConsumerImpl implements MessageConsumer {
                 return;
             }
 
-            BasicTradeService service = (BasicTradeService) context.getBean(serviceName);
+            IBasicService service = (IBasicService) context.getBean(serviceName);
             service.execute(messageEntity);
         } catch (Exception e) {
             logger.error("资金结算类获取异常 topic={}", messageEntity.getMsgTopic(), e);

@@ -17,7 +17,7 @@ import com.xmopay.funds.dto.TradeOrderDto;
 import com.xmopay.funds.dto.ext.TradeOrderDtoExt;
 import com.xmopay.funds.entity.MessageEntity;
 import com.xmopay.funds.exception.FundsException;
-import com.xmopay.funds.service.ITradeRechargeService;
+import com.xmopay.funds.service.IRechargeServiceI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ import java.util.Map;
  * @date 10:41 AM, 2018/4/26
  */
 @Service("tradeRechargeServiceImpl")
-public class TradeRechargeServiceImpl implements ITradeRechargeService {
-    private static final Logger logger = LoggerFactory.getLogger(TradeRechargeServiceImpl.class);
+public class RechargeServiceImpl implements IRechargeServiceI {
+    private static final Logger logger = LoggerFactory.getLogger(RechargeServiceImpl.class);
 
     /**
      * 订单异常码

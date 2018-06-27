@@ -1,7 +1,7 @@
 package com.xmopay.funds.service.impl;
 
 import com.xmopay.funds.entity.MessageEntity;
-import com.xmopay.funds.service.ITradeRefundService;
+import com.xmopay.funds.service.IRefundServiceI;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * @date 10:03 AM, 2018/4/27
  */
 @Service("tradeRefundServiceImpl")
-public class TradeRefundServiceImpl implements ITradeRefundService {
+public class RefundServiceImplI implements IRefundServiceI {
 
     @Override
     public void execute(MessageEntity entity) {
