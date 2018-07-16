@@ -12,7 +12,6 @@ public interface IChannelService {
 
     int updateChannelByIdLock(String channelId);
 
-
     Map selectChannelByIdLock(String channelId);
 
 }

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 public interface TradeOrderDao {
 
-    public TradeOrderDto getTradeOrderByOrderSnToLock(TradeOrderDto tradeOrderDto);
+    TradeOrderDto getTradeOrderByOrderSnToLock(TradeOrderDto tradeOrderDto);
 
-    public int updateTradeOrderStatus(TradeOrderDto tradeOrderDto);
+    int updateTradeOrderStatus(TradeOrderDto tradeOrderDto);
 }

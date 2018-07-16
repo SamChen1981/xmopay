@@ -20,7 +20,7 @@ public class ChannelController {
 
     @RequestMapping(value = "update")
     public String updateChannel() {
-        iChannelService.updateChannelByIdLock("65");
-        return "success";
+        int result = iChannelService.updateChannelByIdLock("65");
+        return (result > 0 ? "success" : "fail");
     }
 }

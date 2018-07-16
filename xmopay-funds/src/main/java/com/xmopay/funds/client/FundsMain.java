@@ -48,7 +48,7 @@ public class FundsMain implements IFundsMain {
     @Override
     @Async
     public void execute() {
-        System.out.println("=====" + Thread.currentThread().getName() + "=========");
+        logger.info("=====" + Thread.currentThread().getName() + "=========");
         if (!enable) {
             logger.info("*********************未开启资金结算读取任务*********************");
             return;
@@ -68,11 +68,7 @@ public class FundsMain implements IFundsMain {
         ResultSet rs = null;
         try {
             MessageEntity messageEntity = null;
-            List<Integer> mqIds = null;
-
             while (!stop) {
-                mqIds = new ArrayList<>(16);
-
                 statement = connection.prepareStatement(sql);
                 rs = statement.executeQuery();
                 while (rs.next()) {
@@ -85,35 +81,30 @@ public class FundsMain implements IFundsMain {
                     String dateline = rs.getString("DATELINE");
                     String messageHost = rs.getString("MESSAGE_HOST");
 
-                    mqIds.add(mqId);
+                    statement = connection.prepareStatement("update wp_message_queue set THREAD_STATUS = ?, CONSUMER_STATUS = ? where MQID = ?");
+                    statement.setInt(1, 1);
+                    statement.setInt(2, 1);
+                    statement.setInt(2, 1);
+                    statement.setInt(2, 1);
+                    statement.setInt(3, mqId);
+                    if (statement.executeUpdate() <= 0) {
+                        continue;
+                    }
+                    statement.close();
+
                     messageEntity = new MessageEntity(mqId, notifyCount, orderSn, partnerId, msgBody, msgTopic, dateline, messageHost);
                     messageConsumer.consumer(messageEntity);
                 }
                 rs.close();
                 statement.close();
 
-                statement = connection.prepareStatement("update wp_message_queue set THREAD_STATUS = ?, CONSUMER_STATUS = ? where MQID = ?");
-                for (int i = 0, len = mqIds.size(); i < len; i++) {
-                    statement.setInt(1, 1);
-                    statement.setInt(2, 1);
-                    statement.setInt(3, mqIds.get(i));
-                    statement.addBatch();
-                }
-                statement.executeBatch();
-                statement.close();
+                logger.info("*********************暂无数据*********************");
 
-                TimeUnit.MILLISECONDS.sleep(500L);
+                TimeUnit.MILLISECONDS.sleep(1000L);
             }
         } catch (Exception e) {
             logger.error("执行资金结算消息异常!", e);
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
             if (rs != null) {
                 try {
                     rs.close();
@@ -124,6 +115,13 @@ public class FundsMain implements IFundsMain {
             if (statement != null) {
                 try {
                     statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

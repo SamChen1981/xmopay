@@ -1,6 +1,7 @@
 package com.xmopay.funds.service.impl;
 
 import com.xmopay.funds.dao.ChannelDao;
+import com.xmopay.funds.exception.FundsException;
 import com.xmopay.funds.service.IChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class ChannelServiceImpl implements IChannelService {
             System.out.println("pre...");
             Map channel = selectChannelByIdLock(channelId);
             if (channel == null) {
-                throw new RuntimeException("渠道ID:" + channelId + "不存在.");
+                throw new FundsException("渠道ID:" + channelId + "不存在.");
             }
             result = channelDao.updateChannelById(channelId);
             System.out.println("update...");

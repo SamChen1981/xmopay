@@ -71,7 +71,7 @@ public class RechargeServiceImpl implements IRechargeServiceI {
 
     private void doRecharge(MessageEntity entity) {
         long startTime = System.currentTimeMillis();
-        logger.info("--------------------[交易加款服务开始执行]--------------------");
+        logger.info("--------------------[交易异步加款服务开始执行]--------------------");
 
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         // 设置事务隔离级别，开启新事务
@@ -94,21 +94,27 @@ public class RechargeServiceImpl implements IRechargeServiceI {
             pTradeOrderDto.setOrderStatus(StatusConstants.TRADE_WAIT_BANK_HANDLE);
             TradeOrderDto tradeOrderDto = tradeOrderDao.getTradeOrderByOrderSnToLock(pTradeOrderDto);
             if (tradeOrderDto == null || XmoPayUtils.isEmpty(tradeOrderDto.getPartnerId())) {
-                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易加款服务] 订单号: " + orderSn + ", 未查询到该笔交易订单信息!");
+                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易异步加款服务] 订单号: " + orderSn + ", 未查询到该笔交易订单信息!");
             }
 
             long orderTimestamp = DateTimeUtils.getStringToDateTime(tradeOrderDto.getOrderTime(), "yyyy-MM-dd HH:mm:ss").getTime();
             if ((System.currentTimeMillis() - orderTimestamp) > 86400000L) {
-                // 1天之内的订单还未完成加款, 判定为异常订单
-                // 应由通过主动查单完成操作或重新发起交易订单请求
-                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易加款服务] 订单号: " + orderSn + ", 该笔交易订单已超过正常加款交易时间范围, 如需帮助请联系客服!");
+                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易异步加款服务] 订单号: " + orderSn + ", 该笔交易订单加款超时, 请取消订单或联系客服!");
             }
 
-            logger.info("[交易加款服务] 订单数据, 订单号={}, 订单金额={}, 交易类型={}, 商户名称={}, 支付方式={}, 银行卡号={}"
-                    + ", 通知地址={}, 平台订单时间={}, 扩展字段={}, 订单状态={}, 交易IP={}, COOKIE HASH码={}"
-                    , orderSn, tradeOrderDto.getOrderAmount(), tradeOrderDto.getTranType(), tradeOrderDto.getPartnerName(),
-                    tradeOrderDto.getPayType(), tradeOrderDto.getBankCode(), tradeOrderDto.getNotifyUrl(), tradeOrderDto.getOrderTime(),
-                    tradeOrderDto.getExtendParam(), tradeOrderDto.getOrderStatus(), tradeOrderDto.getTradeIp(), tradeOrderDto.getTradeHash());
+            logger.info("[交易异步加款服务] 订单数据, 订单号={}, 订单金额={}, 交易类型={}, 商户名称={}, 支付方式={}, 银行卡号={}, 通知地址={}, 平台订单时间={}, 扩展字段={}, 订单状态={}, 交易IP={}, COOKIE HASH码={}",
+                    orderSn,
+                    tradeOrderDto.getOrderAmount(),
+                    tradeOrderDto.getTranType(),
+                    tradeOrderDto.getPartnerName(),
+                    tradeOrderDto.getPayType(),
+                    tradeOrderDto.getBankCode(),
+                    tradeOrderDto.getNotifyUrl(),
+                    tradeOrderDto.getOrderTime(),
+                    tradeOrderDto.getExtendParam(),
+                    tradeOrderDto.getOrderStatus(),
+                    tradeOrderDto.getTradeIp(),
+                    tradeOrderDto.getTradeHash());
 
             // #2 获取商户产品信息
             PartnerProductDto partnerProductDto = new PartnerProductDto();
@@ -118,26 +124,23 @@ public class RechargeServiceImpl implements IRechargeServiceI {
             partnerProductDto = partnerProductDao.getPartnerProduct(partnerProductDto);
             BigDecimal rate = partnerProductDto.getRate();
             if (rate.compareTo(new BigDecimal("0")) == 0 || rate.compareTo(new BigDecimal("0")) < 0) {
-                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易加款服务] 订单号: " + orderSn + ", 费率设置异常["+rate.toString()+"], 交易加款失败!");
+                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易异步加款服务] 订单号: " + orderSn + ", 费率设置异常["+rate.toString()+"], 交易加款失败!");
             }
 
             BigDecimal fee = new BigDecimal(tradeOrderDto.getOrderAmount()).multiply(rate).divide(new BigDecimal("100")).setScale(2, RoundingMode.UP);
             if (fee.compareTo(new BigDecimal(tradeOrderDto.getOrderAmount())) > 0) {
-                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易加款服务] 订单号: " + orderSn + ", 交易费率设置有误["+rate.toString()+"], 交易加款失败!");
+                throw new FundsException(CODE_TRADE_EXCEPTION, "[交易异步加款服务] 订单号: " + orderSn + ", 交易费率设置有误["+rate.toString()+"], 交易加款失败!");
             }
 
-            logger.info("[交易加款服务] 商户产品信息, 产品类型={}, 银行代码={}, 费率={}",
+            logger.info("[交易异步加款服务] 商户产品信息, 产品类型={}, 银行代码={}, 费率={}",
                     partnerProductDto.getProductType(), partnerProductDto.getBankCode(), partnerProductDto.getRate());
 
             // #3 商户账户信息
             PartnerAccountDto partnerAccountDto = partnerAccountDao.getPartnerAccountByPidLock(partnerId);
-            logger.info("[交易加款服务] 商户账户信息, 商户号={}, 当前余额={}", partnerId, partnerAccountDto.getBalance());
+            logger.info("[交易异步加款服务] 商户账户信息, 商户号={}, 当前余额={}", partnerId, partnerAccountDto.getBalance());
 
             BigDecimal payment = new BigDecimal(tradeOrderDto.getOrderAmount()).subtract(fee).setScale(2, RoundingMode.DOWN);
             BigDecimal currentBalance = new BigDecimal(partnerAccountDto.getBalance()).add(payment).setScale(2, RoundingMode.DOWN);
-
-            // 更新状态
-            int uState = 0;
 
             // #4 增加流水
             String billingSN = StringUtils.buildBillsn();
@@ -153,7 +156,7 @@ public class RechargeServiceImpl implements IRechargeServiceI {
             billingsDto.setTradeFee(fee.toString());
             billingsDto.setPayment(payment.toPlainString());
             billingsDto.setAccountAmount(currentBalance.toPlainString());
-            billingsDto.setRemark("[交易加款服务] 商户号: " + partnerId
+            billingsDto.setRemark("[交易异步加款服务] 商户号: " + partnerId
                     + ", 订单号: " + orderSn
                     + ", 账户变动前余额: " + partnerAccountDto.getBalance()
                     + ", 交易金额: " + tradeOrderDto.getOrderAmount()
@@ -161,25 +164,22 @@ public class RechargeServiceImpl implements IRechargeServiceI {
                     + ", 账户变动后余额: " + currentBalance);
             billingsDto.setTradeTime(DateTimeUtils.dateFullString());
             billingsDto.setPayStatus(1);
-            uState = billingsDao.insertBillings(billingsDto);
-            if (uState < 0) {
-                throw new FundsException("[交易加款服务] 订单号: " + orderSn + ", 添加流水失败!");
+            if (billingsDao.insertBillings(billingsDto) < 0) {
+                throw new FundsException("[交易异步加款服务] 订单号: " + orderSn + ", 添加流水失败!");
             }
 
-            logger.info("[交易加款服务] 增加流水, 流水号={}, 订单号={}", billingSN, orderSn);
+            logger.info("[交易异步加款服务] 增加流水, 流水号={}, 订单号={}", billingSN, orderSn);
 
             // #5 更新账户余额
             PartnerAccountDto pPartnerAccountDto = new PartnerAccountDto();
             pPartnerAccountDto.setBalance(payment.toString());
             pPartnerAccountDto.setPartnerId(partnerId);
             pPartnerAccountDto.setLastTrade(DateTimeUtils.dateFullString());
-            uState = partnerAccountDao.updatePartnerAccount(pPartnerAccountDto);
-            if (uState < 0) {
-                throw new FundsException("[交易加款服务] 商户号: " + partnerId + ", 更新账户余额失败!");
+            if (partnerAccountDao.updatePartnerAccount(pPartnerAccountDto) < 0) {
+                throw new FundsException("[交易异步加款服务] 商户号: " + partnerId + ", 更新账户余额失败!");
             }
 
-            logger.info("[交易加款服务] 更新账户余额, 商户号={}, 加款金额={}",
-                    partnerId, payment);
+            logger.info("[交易异步加款服务] 更新账户余额, 商户号={}, 加款金额={}", partnerId, payment);
 
             // #6 更新订单
             pTradeOrderDto = new TradeOrderDtoExt();
@@ -187,18 +187,17 @@ public class RechargeServiceImpl implements IRechargeServiceI {
             pTradeOrderDto.setBillingSn(billingSN);
             pTradeOrderDto.setFinishTime(DateTimeUtils.dateFullString());
             pTradeOrderDto.setOrderStatus(StatusConstants.TRADE_SUCCESS);
-            uState = tradeOrderDao.updateTradeOrderStatus(pTradeOrderDto);
-            if (uState < 0) {
-                throw new FundsException("[交易加款服务] 订单号: " + orderSn + ", 更新订单状态失败!");
+            if (tradeOrderDao.updateTradeOrderStatus(pTradeOrderDto) < 0) {
+                throw new FundsException("[交易异步加款服务] 订单号: " + orderSn + ", 更新订单状态失败!");
             }
 
-            logger.info("[交易加款服务] 更新订单, 订单号={}, 流水号={}", orderSn, billingSN);
+            logger.info("[交易异步加款服务] 更新订单, 订单号={}, 流水号={}", orderSn, billingSN);
 
             // #7 删除消息队列
             messageQueueDao.deleteMessageQueueById(mqId);
 
             txManager.commit(transactionStatus);
-            logger.info("[交易加款服务] 商户号={}, 订单号={}, 账户变动前余额={}, 交易金额={}, 手续费={}, 账户变动后余额={}, 该笔交易加款成功!",
+            logger.info("[交易异步加款服务] 商户号={}, 订单号={}, 账户变动前余额={}, 交易金额={}, 手续费={}, 账户变动后余额={}, 该笔交易加款成功!",
                     partnerId, orderSn, partnerAccountDto.getBalance(), tradeOrderDto.getOrderAmount(), fee, currentBalance);
         } catch (Exception e) {
             txManager.rollback(transactionStatus);
@@ -212,9 +211,9 @@ public class RechargeServiceImpl implements IRechargeServiceI {
                     tradeOrderDao.updateTradeOrderStatus(tradeOrderDtoExt);
                 }
             }
-            logger.error("[交易加款服务]执行异常 订单号={}, 异常信息={}" + e.getMessage(), orderSn, e);
+            logger.error("[交易异步加款服务]执行异常 订单号={}, 异常信息={}", orderSn, e.getMessage(), e);
         }
-        logger.info("[交易加款服务] 执行结束, 执行时间: " + (System.currentTimeMillis() - startTime));
+        logger.info("[交易异步加款服务] 执行结束, 耗时[{}ms]", (System.currentTimeMillis() - startTime));
     }
 
 }
